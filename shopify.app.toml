@@ -1,0 +1,28 @@
+# Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
+
+name = "addlee-now-app"
+client_id = "81054b8def443db2e61797cf88dcc62b"
+application_url = "https://precious-dishes-gcc-flesh.trycloudflare.com"
+embedded = true
+
+[access_scopes]
+# Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
+scopes = "write_products,read_products,write_shipping,read_shipping,write_delivery_customizations"
+
+[auth]
+redirect_urls = [
+  "https://precious-dishes-gcc-flesh.trycloudflare.com/auth/callback",
+  "https://precious-dishes-gcc-flesh.trycloudflare.com/auth/shopify/callback",
+  "https://precious-dishes-gcc-flesh.trycloudflare.com/api/auth/callback",
+  "https://precious-dishes-gcc-flesh.trycloudflare.com/.shopify/graphiql/auth/callback"
+]
+
+[webhooks]
+api_version = "2023-10"
+
+[pos]
+embedded = false
+
+[build]
+automatically_update_urls_on_dev = true
+dev_store_url = "dev-addlee.myshopify.com"

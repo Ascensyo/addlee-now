@@ -1,0 +1,30 @@
+# query RunInput {
+#   deliveryCustomization {
+#     metafield(namespace: "$app:delivery-customization", key: "function-configuration") {
+#       value
+#     }
+#   }
+# }
+
+# Eduard 4th Dec 23
+query RunInput {
+  cart {
+    deliveryGroups {
+      deliveryAddress {
+        provinceCode
+      }
+      deliveryOptions {
+        handle
+        title
+      }
+    }
+  }
+  deliveryCustomization {
+    metafield(
+      namespace: "$app:delivery-customization"
+      key: "function-configuration"
+    ) {
+      value
+    }
+  }
+}
