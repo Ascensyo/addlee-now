@@ -1145,7 +1145,7 @@
             var dispatcher = resolveDispatcher();
             return dispatcher.useRef(initialValue);
           }
-          function useEffect3(create, deps) {
+          function useEffect2(create, deps) {
             var dispatcher = resolveDispatcher();
             return dispatcher.useEffect(create, deps);
           }
@@ -1927,7 +1927,7 @@
           exports.useContext = useContext3;
           exports.useDebugValue = useDebugValue;
           exports.useDeferredValue = useDeferredValue;
-          exports.useEffect = useEffect3;
+          exports.useEffect = useEffect2;
           exports.useId = useId;
           exports.useImperativeHandle = useImperativeHandle;
           exports.useInsertionEffect = useInsertionEffect;
@@ -19558,7 +19558,6 @@ ${errorInfo.componentStack}`);
       let today = /* @__PURE__ */ new Date();
       const yesterday2 = new Date(today);
       yesterday2.setDate(today.getDate() - 1);
-      console.log(yesterday2.toDateString());
       const tomorrow = new Date(today);
       tomorrow.setDate(today.getDate() + 1);
       const deliveryDate = today.getDay() === 0 ? tomorrow : today;
@@ -19566,7 +19565,6 @@ ${errorInfo.componentStack}`);
       setYesterday(formatDate(yesterday2));
     }, []);
     const handleChangeDate = (0, import_react13.useCallback)((selectedDate2) => {
-      console.log(selectedDate2);
       setSelectedDate(selectedDate2);
       applyMetafieldsChange({
         type: "updateMetafield",
@@ -19578,10 +19576,13 @@ ${errorInfo.componentStack}`);
     }, []);
     const isExpressSelected = () => {
       var _a, _b;
+      if (target !== "purchase.checkout.shipping-option-list.render-after" || !deliveryGroups) {
+        return false;
+      }
       const expressHandle = (_a = deliveryGroups[0].deliveryOptions.find(
-        (method) => method.title == "AddLee Delivery"
+        (method) => method.title == "12/12/2023 15:00-17:00 <Change>"
       )) == null ? void 0 : _a.handle;
-      return expressHandle !== ((_b = deliveryGroups[0].selectedDeliveryOption) == null ? void 0 : _b.handle);
+      return expressHandle === ((_b = deliveryGroups[0].selectedDeliveryOption) == null ? void 0 : _b.handle) ? true : false;
     };
     return isExpressSelected() ? /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)(import_jsx_runtime4.Fragment, { children: [
       /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(Heading2, { children: "Select a 2hr slot on delivery" }),

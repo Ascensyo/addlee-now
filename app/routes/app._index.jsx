@@ -12,8 +12,11 @@ import {
   List,
   Link,
   InlineStack,
+  Image,
 } from "@shopify/polaris";
 import { authenticate } from "../shopify.server";
+
+import image from "../../public/addlee-rev.png";
 
 export const loader = async ({ request }) => {
   await authenticate.admin(request);
@@ -84,11 +87,12 @@ export default function Index() {
 
   return (
     <Page>
-      <ui-title-bar title="Remix Shopify App">
+      <ui-title-bar title="AddLee Remix Shopify App">
         <button variant="primary" onClick={generateProduct}>
           Generate a product
         </button>
       </ui-title-bar>
+      <Image source={image} />
       <BlockStack gap="500">
         <Layout>
           <Layout.Section>
