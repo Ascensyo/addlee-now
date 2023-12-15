@@ -1,8 +1,8 @@
 # Learn more about configuring your app at https://shopify.dev/docs/apps/tools/cli/configuration
 
-name = "addlee-now-app"
+name = "AddLee Now"
 client_id = "81054b8def443db2e61797cf88dcc62b"
-application_url = "https://precious-dishes-gcc-flesh.trycloudflare.com"
+application_url = "https://luther-euro-dive-modifications.trycloudflare.com"
 embedded = true
 
 [access_scopes]
@@ -11,14 +11,19 @@ scopes = "write_products,read_products,write_shipping,read_shipping,write_delive
 
 [auth]
 redirect_urls = [
-  "https://precious-dishes-gcc-flesh.trycloudflare.com/auth/callback",
-  "https://precious-dishes-gcc-flesh.trycloudflare.com/auth/shopify/callback",
-  "https://precious-dishes-gcc-flesh.trycloudflare.com/api/auth/callback",
-  "https://precious-dishes-gcc-flesh.trycloudflare.com/.shopify/graphiql/auth/callback"
+  "https://luther-euro-dive-modifications.trycloudflare.com/auth/callback",
+  "https://luther-euro-dive-modifications.trycloudflare.com/auth/shopify/callback",
+  "https://luther-euro-dive-modifications.trycloudflare.com/api/auth/callback",
+  "https://luther-euro-dive-modifications.trycloudflare.com/.shopify/graphiql/auth/callback"
 ]
 
 [webhooks]
 api_version = "2023-10"
+
+[app_proxy]
+url = "https://luther-euro-dive-modifications.trycloudflare.com/api/2.0"
+subpath = "affiliates-api-url"
+prefix = "tools"
 
 [pos]
 embedded = false

@@ -7,8 +7,8 @@ api_version = "2023-10"
 
 [[extensions]]
 type = "ui_extension"
-name = "addlee-now-checkout"
-handle = "addlee-now-checkout"
+name = "addlee-options"
+handle = "addlee-options"
 
 # Controls where in Shopify your extension will be injected,
 # and the file that contains your extension’s source code. Learn more:
@@ -16,13 +16,12 @@ handle = "addlee-now-checkout"
 
 [[extensions.targeting]]
 module = "./src/Checkout.jsx"
-target = "purchase.checkout.shipping-option-list.render-after"
+target = "purchase.checkout.block.render"
 
 [extensions.capabilities]
 # Gives your extension access to directly query Shopify’s storefront API.
 # https://shopify.dev/docs/api/checkout-ui-extensions/unstable/configuration#api-access
 api_access = true
-network_access = true
 
 # Gives your extension access to make external network calls, using the
 # JavaScript `fetch()` API. Learn more:
