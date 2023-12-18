@@ -16,7 +16,7 @@ handle = "addlee-options"
 
 [[extensions.targeting]]
 module = "./src/Checkout.jsx"
-target = "purchase.checkout.block.render"
+target = "purchase.checkout.shipping-option-item.details.render"
 
 [extensions.capabilities]
 # Gives your extension access to directly query Shopify’s storefront API.

@@ -2,7 +2,7 @@
 
 name = "AddLee Now"
 client_id = "81054b8def443db2e61797cf88dcc62b"
-application_url = "https://staying-cry-white-recipe.trycloudflare.com"
+application_url = "https://dash-agreements-baskets-classes.trycloudflare.com"
 embedded = true
 
 [access_scopes]
@@ -11,17 +11,17 @@ scopes = "write_products,read_products,write_shipping,read_shipping,write_delive
 
 [auth]
 redirect_urls = [
-  "https://staying-cry-white-recipe.trycloudflare.com/auth/callback",
-  "https://staying-cry-white-recipe.trycloudflare.com/auth/shopify/callback",
-  "https://staying-cry-white-recipe.trycloudflare.com/api/auth/callback",
-  "https://staying-cry-white-recipe.trycloudflare.com/.shopify/graphiql/auth/callback"
+  "https://dash-agreements-baskets-classes.trycloudflare.com/auth/callback",
+  "https://dash-agreements-baskets-classes.trycloudflare.com/auth/shopify/callback",
+  "https://dash-agreements-baskets-classes.trycloudflare.com/api/auth/callback",
+  "https://dash-agreements-baskets-classes.trycloudflare.com/.shopify/graphiql/auth/callback"
 ]
 
 [webhooks]
 api_version = "2023-10"
 
 [app_proxy]
-url = "https://staying-cry-white-recipe.trycloudflare.com/api/2.0"
+url = "https://dash-agreements-baskets-classes.trycloudflare.com/api/2.0"
 subpath = "affiliates-api-url"
 prefix = "tools"
 
