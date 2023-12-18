@@ -6,6 +6,8 @@ import {
   BlockStack,
   Text,
   InlineLayout,
+  Image,
+  Button,
 } from "@shopify/ui-extensions-react/checkout";
 import { useEffect, useState } from "react";
 
@@ -15,26 +17,30 @@ export default reactExtension(
 );
 
 const timeSlots = [
-  {
-    id: "f5f1a93d-35c0-448d-a255-888baa67ff85@2bca6ae1",
-    from_date: "2023-12-16T10:00:00+00:00",
-    till_date: "2023-12-16T12:00:00+00:00",
-  },
-  {
-    id: "f5f1a93d-35c0-448d-a255-888baa67ff85@398646e1",
-    from_date: "2023-12-16T12:00:00+00:00",
-    till_date: "2023-12-16T14:00:00+00:00",
-  },
-  {
-    id: "f5f1a93d-35c0-448d-a255-888baa67ff85@4741aae1",
-    from_date: "2023-12-16T14:00:00+00:00",
-    till_date: "2023-12-16T16:00:00+00:00",
-  },
-  {
-    id: "f5f1a93d-35c0-448d-a255-888baa67ff85@54fd86e1",
-    from_date: "2023-12-16T16:00:00+00:00",
-    till_date: "2023-12-16T18:00:00+00:00",
-  },
+  [
+    {
+      id: "0b19cc7b-0e98-4220-892d-acdd9bda13d9@1a2ceae1",
+      from_date: "2023-12-16T10:00:00+00:00",
+      till_date: "2023-12-16T12:00:00+00:00",
+    },
+    {
+      id: "f5f1a93d-35c0-448d-a255-888baa67ff85@398646e1",
+      from_date: "2023-12-16T12:00:00+00:00",
+      till_date: "2023-12-16T14:00:00+00:00",
+    },
+  ],
+  [
+    {
+      id: "f5f1a93d-35c0-448d-a255-888baa67ff85@4741aae1",
+      from_date: "2023-12-16T14:00:00+00:00",
+      till_date: "2023-12-16T16:00:00+00:00",
+    },
+    {
+      id: "f5f1a93d-35c0-448d-a255-888baa67ff85@54fd86e1",
+      from_date: "2023-12-16T16:00:00+00:00",
+      till_date: "2023-12-16T18:00:00+00:00",
+    },
+  ],
 ];
 
 function Extension() {
@@ -46,8 +52,6 @@ function Extension() {
   useEffect(() => {
     const today = new Date();
     setSelectedDate(formatDate(today));
-
-    setSelectedTime(options[0].value);
   }, []);
 
   const isAddLeeDeliverySelected = () => {
@@ -70,16 +74,24 @@ function Extension() {
     //when date changes, call API to get available timeslots
   }, [selectedDate]);
 
-  const options = timeSlots.map((interval) => ({
-    value:
-      formatTime(new Date(interval.from_date)) +
-      " - " +
-      formatTime(new Date(interval.till_date)),
-    label:
-      formatTime(new Date(interval.from_date)) +
-      " - " +
-      formatTime(new Date(interval.till_date)),
-  }));
+  const [options, setOptions] = useState([]);
+
+  useEffect(() => {
+    const day = selectedDate === "2023-12-18" ? 0 : 1;
+    setOptions(
+      timeSlots[day].map((interval) => ({
+        value: interval.id,
+        label:
+          formatTime(new Date(interval.from_date)) +
+          " - " +
+          formatTime(new Date(interval.till_date)),
+      }))
+    );
+  }, [selectedDate]);
+
+  useEffect(() => {
+    if (options.length > 0) setSelectedTime(options[0].value);
+  }, [options]);
 
   // const shippingOption = useShippingOptionTarget();
 
@@ -87,19 +99,33 @@ function Extension() {
     return selectedDate?.split("-").reverse().join("-");
   };
 
+  const makeBooking = async () => {
+    console.log("make booking");
+    await fetch("https://localhost:3000/confirmBooking", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        time: selectedTime,
+      }),
+    });
+    console.log("made booking");
+  };
+
   return isAddLeeDeliverySelected() ? (
     <>
       <BlockStack>
         <Text>
-          Selected date & time: {getDate()} - {selectedTime}
+          Selected date & time: {getDate()} - {getLabel(selectedTime)}
         </Text>
+
+        <Image src="./14X14.svg" />
 
         <InlineLayout columns={["48%", "fill", "48%"]}>
           <DateField
             value={selectedDate}
             label="Delivery date"
             onChange={changeDate}
-            disabled={[{ end: "2023-12-14" }]}
+            disabled={[{ end: "2023-12-17" }, { start: "2023-12-20" }]}
           />
           <BlockStack />
           <Select
@@ -110,6 +136,8 @@ function Extension() {
           />
           {/* {JSON.stringify(shippingOption)} */}
         </InlineLayout>
+
+        <Button onPress={makeBooking}>Make booking</Button>
       </BlockStack>
     </>
   ) : null;
@@ -126,4 +154,18 @@ const formatTime = (time) => {
   const hours = String(time.getHours()).padStart(2, "0");
   const minutes = String(time.getMinutes()).padStart(2, "0");
   return `${hours}:${minutes}`;
+};
+
+const getLabel = (timeSlotId) => {
+  if (!timeSlotId) return "-";
+
+  const timeSlot = timeSlots.find((slot) =>
+    slot.find((interval) => interval.id === timeSlotId)
+  );
+  const interval = timeSlot.find((interval) => interval.id === timeSlotId);
+  return (
+    formatTime(new Date(interval.from_date)) +
+    " - " +
+    formatTime(new Date(interval.till_date))
+  );
 };
