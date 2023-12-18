@@ -18,6 +18,10 @@ export const action = async ({ request }) => {
       }
 
       break;
+    case "SUBSCRIPTION_BILLING_ATTEMPTS_SUCCESS":
+      await fetch("localhost:3000/confirmBooking");
+
+      break;
     case "CUSTOMERS_DATA_REQUEST":
     case "CUSTOMERS_REDACT":
     case "SHOP_REDACT":

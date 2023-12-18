@@ -3,6 +3,9 @@ import {
   useDeliveryGroups,
   DateField,
   Select,
+  BlockStack,
+  Text,
+  InlineLayout,
 } from "@shopify/ui-extensions-react/checkout";
 import { useEffect, useState } from "react";
 
@@ -49,7 +52,7 @@ function Extension() {
 
   const isAddLeeDeliverySelected = () => {
     const expressHandle = deliveryGroups[0].deliveryOptions.find(
-      (method) => method.title == "AddLee"
+      (method) => method.title == "AddLee Now"
     )?.handle;
 
     return expressHandle === deliveryGroups[0].selectedDeliveryOption?.handle;
@@ -78,20 +81,36 @@ function Extension() {
       formatTime(new Date(interval.till_date)),
   }));
 
+  // const shippingOption = useShippingOptionTarget();
+
+  const getDate = () => {
+    return selectedDate?.split("-").reverse().join("-");
+  };
+
   return isAddLeeDeliverySelected() ? (
     <>
-      <DateField
-        value={selectedDate}
-        label="Delivery date"
-        onChange={changeDate}
-        disabled={[{ end: "2023-12-14" }]}
-      />
-      <Select
-        label="Time interval"
-        value={selectedTime}
-        onChange={changeTime}
-        options={options}
-      />
+      <BlockStack>
+        <Text>
+          Selected date & time: {getDate()} - {selectedTime}
+        </Text>
+
+        <InlineLayout columns={["48%", "fill", "48%"]}>
+          <DateField
+            value={selectedDate}
+            label="Delivery date"
+            onChange={changeDate}
+            disabled={[{ end: "2023-12-14" }]}
+          />
+          <BlockStack />
+          <Select
+            label="Time interval"
+            value={selectedTime}
+            onChange={changeTime}
+            options={options}
+          />
+          {/* {JSON.stringify(shippingOption)} */}
+        </InlineLayout>
+      </BlockStack>
     </>
   ) : null;
 }

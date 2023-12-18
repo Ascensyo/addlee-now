@@ -19121,11 +19121,20 @@
   // node_modules/@shopify/ui-extensions/build/esm/surfaces/checkout/extension.mjs
   var extension = createExtensionRegistrationFunction();
 
+  // node_modules/@shopify/ui-extensions/build/esm/surfaces/checkout/components/BlockStack/BlockStack.mjs
+  var BlockStack = createRemoteComponent("BlockStack");
+
   // node_modules/@shopify/ui-extensions/build/esm/surfaces/checkout/components/DateField/DateField.mjs
   var DateField = createRemoteComponent("DateField");
 
+  // node_modules/@shopify/ui-extensions/build/esm/surfaces/checkout/components/InlineLayout/InlineLayout.mjs
+  var InlineLayout = createRemoteComponent("InlineLayout");
+
   // node_modules/@shopify/ui-extensions/build/esm/surfaces/checkout/components/Select/Select.mjs
   var Select = createRemoteComponent("Select");
+
+  // node_modules/@shopify/ui-extensions/build/esm/surfaces/checkout/components/Text/Text.mjs
+  var Text = createRemoteComponent("Text");
 
   // node_modules/@shopify/ui-extensions-react/build/esm/surfaces/checkout/render.mjs
   var import_react6 = __toESM(require_react(), 1);
@@ -19455,14 +19464,23 @@ ${errorInfo.componentStack}`);
     }
   };
 
+  // node_modules/@shopify/ui-extensions-react/build/esm/surfaces/checkout/components/BlockStack/BlockStack.mjs
+  var BlockStack2 = createRemoteReactComponent(BlockStack);
+
   // node_modules/@shopify/ui-extensions-react/build/esm/surfaces/checkout/components/DateField/DateField.mjs
   var DateField2 = createRemoteReactComponent(DateField);
+
+  // node_modules/@shopify/ui-extensions-react/build/esm/surfaces/checkout/components/InlineLayout/InlineLayout.mjs
+  var InlineLayout2 = createRemoteReactComponent(InlineLayout);
 
   // node_modules/@shopify/ui-extensions-react/build/esm/surfaces/checkout/components/Select/Select.mjs
   var Select2 = createRemoteReactComponent(Select);
 
+  // node_modules/@shopify/ui-extensions-react/build/esm/surfaces/checkout/components/Text/Text.mjs
+  var Text2 = createRemoteReactComponent(Text);
+
   // node_modules/@shopify/ui-extensions-react/build/esm/surfaces/checkout/hooks/api.mjs
-  var import_react10 = __toESM(require_react(), 1);
+  var import_react13 = __toESM(require_react(), 1);
 
   // node_modules/@shopify/ui-extensions-react/build/esm/surfaces/checkout/errors.mjs
   var CheckoutUIExtensionError = class extends Error {
@@ -19480,7 +19498,7 @@ ${errorInfo.componentStack}`);
 
   // node_modules/@shopify/ui-extensions-react/build/esm/surfaces/checkout/hooks/api.mjs
   function useApi(_target) {
-    const api = (0, import_react10.useContext)(ExtensionApiContext);
+    const api = (0, import_react13.useContext)(ExtensionApiContext);
     if (api == null) {
       throw new CheckoutUIExtensionError("You can only call this hook when running as a UI extension.");
     }
@@ -19488,10 +19506,10 @@ ${errorInfo.componentStack}`);
   }
 
   // node_modules/@shopify/ui-extensions-react/build/esm/surfaces/checkout/hooks/subscription.mjs
-  var import_react11 = __toESM(require_react(), 1);
+  var import_react14 = __toESM(require_react(), 1);
   function useSubscription(subscription) {
-    const [, setValue] = (0, import_react11.useState)(subscription.current);
-    (0, import_react11.useEffect)(() => {
+    const [, setValue] = (0, import_react14.useState)(subscription.current);
+    (0, import_react14.useEffect)(() => {
       let didUnsubscribe = false;
       const checkForUpdates = (newValue) => {
         if (didUnsubscribe) {
@@ -19519,7 +19537,7 @@ ${errorInfo.componentStack}`);
   }
 
   // extensions/addlee-options/src/Checkout.jsx
-  var import_react12 = __toESM(require_react());
+  var import_react15 = __toESM(require_react());
   var import_jsx_runtime4 = __toESM(require_jsx_runtime());
   var Checkout_default = reactExtension(
     "purchase.checkout.shipping-option-item.details.render",
@@ -19549,9 +19567,9 @@ ${errorInfo.componentStack}`);
   ];
   function Extension() {
     const deliveryGroups = useDeliveryGroups();
-    const [selectedDate, setSelectedDate] = (0, import_react12.useState)();
-    const [selectedTime, setSelectedTime] = (0, import_react12.useState)();
-    (0, import_react12.useEffect)(() => {
+    const [selectedDate, setSelectedDate] = (0, import_react15.useState)();
+    const [selectedTime, setSelectedTime] = (0, import_react15.useState)();
+    (0, import_react15.useEffect)(() => {
       const today = /* @__PURE__ */ new Date();
       setSelectedDate(formatDate(today));
       setSelectedTime(options[0].value);
@@ -19559,7 +19577,7 @@ ${errorInfo.componentStack}`);
     const isAddLeeDeliverySelected = () => {
       var _a, _b;
       const expressHandle = (_a = deliveryGroups[0].deliveryOptions.find(
-        (method) => method.title == "AddLee"
+        (method) => method.title == "AddLee Now"
       )) == null ? void 0 : _a.handle;
       return expressHandle === ((_b = deliveryGroups[0].selectedDeliveryOption) == null ? void 0 : _b.handle);
     };
@@ -19569,32 +19587,44 @@ ${errorInfo.componentStack}`);
     const changeTime = (time) => {
       setSelectedTime(time);
     };
-    (0, import_react12.useEffect)(() => {
+    (0, import_react15.useEffect)(() => {
     }, [selectedDate]);
     const options = timeSlots.map((interval) => ({
       value: formatTime(new Date(interval.from_date)) + " - " + formatTime(new Date(interval.till_date)),
       label: formatTime(new Date(interval.from_date)) + " - " + formatTime(new Date(interval.till_date))
     }));
-    return isAddLeeDeliverySelected() ? /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)(import_jsx_runtime4.Fragment, { children: [
-      /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
-        DateField2,
-        {
-          value: selectedDate,
-          label: "Delivery date",
-          onChange: changeDate,
-          disabled: [{ end: "2023-12-14" }]
-        }
-      ),
-      /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
-        Select2,
-        {
-          label: "Time interval",
-          value: selectedTime,
-          onChange: changeTime,
-          options
-        }
-      )
-    ] }) : null;
+    const getDate = () => {
+      return selectedDate == null ? void 0 : selectedDate.split("-").reverse().join("-");
+    };
+    return isAddLeeDeliverySelected() ? /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(import_jsx_runtime4.Fragment, { children: /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)(BlockStack2, { children: [
+      /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)(Text2, { children: [
+        "Selected date & time: ",
+        getDate(),
+        " - ",
+        selectedTime
+      ] }),
+      /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)(InlineLayout2, { columns: ["48%", "fill", "48%"], children: [
+        /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
+          DateField2,
+          {
+            value: selectedDate,
+            label: "Delivery date",
+            onChange: changeDate,
+            disabled: [{ end: "2023-12-14" }]
+          }
+        ),
+        /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(BlockStack2, {}),
+        /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
+          Select2,
+          {
+            label: "Time interval",
+            value: selectedTime,
+            onChange: changeTime,
+            options
+          }
+        )
+      ] })
+    ] }) }) : null;
   }
   var formatDate = (date) => {
     const year = date.getFullYear();
