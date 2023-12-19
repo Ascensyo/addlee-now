@@ -1161,7 +1161,7 @@
             var dispatcher = resolveDispatcher();
             return dispatcher.useCallback(callback, deps);
           }
-          function useMemo2(create, deps) {
+          function useMemo3(create, deps) {
             var dispatcher = resolveDispatcher();
             return dispatcher.useMemo(create, deps);
           }
@@ -1932,7 +1932,7 @@
           exports.useImperativeHandle = useImperativeHandle;
           exports.useInsertionEffect = useInsertionEffect;
           exports.useLayoutEffect = useLayoutEffect;
-          exports.useMemo = useMemo2;
+          exports.useMemo = useMemo3;
           exports.useReducer = useReducer;
           exports.useRef = useRef2;
           exports.useState = useState3;
@@ -19121,6 +19121,9 @@
   // node_modules/@shopify/ui-extensions/build/esm/surfaces/checkout/extension.mjs
   var extension = createExtensionRegistrationFunction();
 
+  // node_modules/@shopify/ui-extensions/build/esm/surfaces/checkout/components/Banner/Banner.mjs
+  var Banner = createRemoteComponent("Banner");
+
   // node_modules/@shopify/ui-extensions/build/esm/surfaces/checkout/components/BlockStack/BlockStack.mjs
   var BlockStack = createRemoteComponent("BlockStack");
 
@@ -19470,6 +19473,9 @@ ${errorInfo.componentStack}`);
     }
   };
 
+  // node_modules/@shopify/ui-extensions-react/build/esm/surfaces/checkout/components/Banner/Banner.mjs
+  var Banner2 = createRemoteReactComponent(Banner);
+
   // node_modules/@shopify/ui-extensions-react/build/esm/surfaces/checkout/components/BlockStack/BlockStack.mjs
   var BlockStack2 = createRemoteReactComponent(BlockStack);
 
@@ -19494,7 +19500,7 @@ ${errorInfo.componentStack}`);
   var Text2 = createRemoteReactComponent(Text);
 
   // node_modules/@shopify/ui-extensions-react/build/esm/surfaces/checkout/hooks/api.mjs
-  var import_react15 = __toESM(require_react(), 1);
+  var import_react16 = __toESM(require_react(), 1);
 
   // node_modules/@shopify/ui-extensions-react/build/esm/surfaces/checkout/errors.mjs
   var CheckoutUIExtensionError = class extends Error {
@@ -19512,7 +19518,7 @@ ${errorInfo.componentStack}`);
 
   // node_modules/@shopify/ui-extensions-react/build/esm/surfaces/checkout/hooks/api.mjs
   function useApi(_target) {
-    const api = (0, import_react15.useContext)(ExtensionApiContext);
+    const api = (0, import_react16.useContext)(ExtensionApiContext);
     if (api == null) {
       throw new CheckoutUIExtensionError("You can only call this hook when running as a UI extension.");
     }
@@ -19520,10 +19526,10 @@ ${errorInfo.componentStack}`);
   }
 
   // node_modules/@shopify/ui-extensions-react/build/esm/surfaces/checkout/hooks/subscription.mjs
-  var import_react16 = __toESM(require_react(), 1);
+  var import_react17 = __toESM(require_react(), 1);
   function useSubscription(subscription) {
-    const [, setValue] = (0, import_react16.useState)(subscription.current);
-    (0, import_react16.useEffect)(() => {
+    const [, setValue] = (0, import_react17.useState)(subscription.current);
+    (0, import_react17.useEffect)(() => {
       let didUnsubscribe = false;
       const checkForUpdates = (newValue) => {
         if (didUnsubscribe) {
@@ -19551,7 +19557,7 @@ ${errorInfo.componentStack}`);
   }
 
   // extensions/addlee-options/src/Checkout.jsx
-  var import_react17 = __toESM(require_react());
+  var import_react18 = __toESM(require_react());
   var import_jsx_runtime4 = __toESM(require_jsx_runtime());
   var Checkout_default = reactExtension(
     "purchase.checkout.shipping-option-item.details.render",
@@ -19560,24 +19566,24 @@ ${errorInfo.componentStack}`);
   var timeSlots = [
     [
       {
-        id: "0b19cc7b-0e98-4220-892d-acdd9bda13d9@1a2ceae1",
+        id: "d6310ee0-8559-4a83-b890-513a2406f2ea@bef86ae1",
         from_date: "2023-12-16T10:00:00+00:00",
         till_date: "2023-12-16T12:00:00+00:00"
       },
       {
-        id: "f5f1a93d-35c0-448d-a255-888baa67ff85@398646e1",
+        id: "d6310ee0-8559-4a83-b890-513a2406f2ea@ccb446e1",
         from_date: "2023-12-16T12:00:00+00:00",
         till_date: "2023-12-16T14:00:00+00:00"
       }
     ],
     [
       {
-        id: "f5f1a93d-35c0-448d-a255-888baa67ff85@4741aae1",
+        id: "d6310ee0-8559-4a83-b890-513a2406f2ea@da6faae1",
         from_date: "2023-12-16T14:00:00+00:00",
         till_date: "2023-12-16T16:00:00+00:00"
       },
       {
-        id: "f5f1a93d-35c0-448d-a255-888baa67ff85@54fd86e1",
+        id: "d6310ee0-8559-4a83-b890-513a2406f2ea@e8286e1",
         from_date: "2023-12-16T16:00:00+00:00",
         till_date: "2023-12-16T18:00:00+00:00"
       }
@@ -19585,9 +19591,11 @@ ${errorInfo.componentStack}`);
   ];
   function Extension() {
     const deliveryGroups = useDeliveryGroups();
-    const [selectedDate, setSelectedDate] = (0, import_react17.useState)();
-    const [selectedTime, setSelectedTime] = (0, import_react17.useState)();
-    (0, import_react17.useEffect)(() => {
+    const [selectedDate, setSelectedDate] = (0, import_react18.useState)();
+    const [selectedTime, setSelectedTime] = (0, import_react18.useState)();
+    const [isFetching, setIsFetching] = (0, import_react18.useState)(false);
+    const [bookingData, setBookingData] = (0, import_react18.useState)(null);
+    (0, import_react18.useEffect)(() => {
       const today = /* @__PURE__ */ new Date();
       setSelectedDate(formatDate(today));
     }, []);
@@ -19604,11 +19612,11 @@ ${errorInfo.componentStack}`);
     const changeTime = (time) => {
       setSelectedTime(time);
     };
-    (0, import_react17.useEffect)(() => {
+    (0, import_react18.useEffect)(() => {
     }, [selectedDate]);
-    const [options, setOptions] = (0, import_react17.useState)([]);
-    (0, import_react17.useEffect)(() => {
-      const day = selectedDate === "2023-12-18" ? 0 : 1;
+    const [options, setOptions] = (0, import_react18.useState)([]);
+    (0, import_react18.useEffect)(() => {
+      const day = selectedDate === "2023-12-19" ? 0 : 1;
       setOptions(
         timeSlots[day].map((interval) => ({
           value: interval.id,
@@ -19616,7 +19624,7 @@ ${errorInfo.componentStack}`);
         }))
       );
     }, [selectedDate]);
-    (0, import_react17.useEffect)(() => {
+    (0, import_react18.useEffect)(() => {
       if (options.length > 0)
         setSelectedTime(options[0].value);
     }, [options]);
@@ -19624,16 +19632,26 @@ ${errorInfo.componentStack}`);
       return selectedDate == null ? void 0 : selectedDate.split("-").reverse().join("-");
     };
     const makeBooking = () => __async(this, null, function* () {
-      console.log("make booking");
-      yield fetch("https://localhost:3000/confirmBooking", {
+      setBookingData(null);
+      setIsFetching(true);
+      const data = yield fetch("https://localhost:3000/confirmBooking", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           time: selectedTime
         })
       });
-      console.log("made booking");
+      setIsFetching(false);
+      const parsedData = yield data.json();
+      setBookingData(parsedData);
     });
+    const bookingTitle = (0, import_react18.useMemo)(() => {
+      if (!bookingData)
+        return "";
+      if (bookingData.error.message === "OK")
+        return `Booking successful \u{1F389} Reservation number: ${bookingData.booking_reference.number}`;
+      return `Booking failed. Error: ${bookingData.error.message}. Code: ${bookingData.error.code}`;
+    }, [bookingData]);
     return isAddLeeDeliverySelected() ? /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(import_jsx_runtime4.Fragment, { children: /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)(BlockStack2, { children: [
       /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)(Text2, { children: [
         "Selected date & time: ",
@@ -19641,15 +19659,23 @@ ${errorInfo.componentStack}`);
         " - ",
         getLabel(selectedTime)
       ] }),
-      /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(Image2, { src: "./14X14.svg" }),
-      /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)(InlineLayout2, { columns: ["48%", "fill", "48%"], children: [
+      /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)(InlineLayout2, { columns: ["10%", "fill", "40%", "fill", "40%"], children: [
+        /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
+          Image2,
+          {
+            source: "https://svgur.com/i/112T.svg",
+            fit: "cover",
+            aspectRatio: "1/1"
+          }
+        ),
+        /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(BlockStack2, {}),
         /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
           DateField2,
           {
             value: selectedDate,
             label: "Delivery date",
             onChange: changeDate,
-            disabled: [{ end: "2023-12-17" }, { start: "2023-12-20" }]
+            disabled: [{ end: "2023-12-18" }, { start: "2023-12-21" }]
           }
         ),
         /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(BlockStack2, {}),
@@ -19663,7 +19689,22 @@ ${errorInfo.componentStack}`);
           }
         )
       ] }),
-      /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(Button2, { onPress: makeBooking, children: "Make booking" })
+      /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
+        Button2,
+        {
+          onPress: makeBooking,
+          loading: isFetching,
+          disabled: isFetching,
+          children: "Make booking"
+        }
+      ),
+      bookingData && /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
+        Banner2,
+        {
+          title: bookingTitle,
+          status: bookingData.error.message === "OK" ? "success" : "critical"
+        }
+      )
     ] }) }) : null;
   }
   var formatDate = (date) => {

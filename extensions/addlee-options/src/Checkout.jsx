@@ -8,8 +8,10 @@ import {
   InlineLayout,
   Image,
   Button,
+  useShippingOptionTarget,
+  Banner,
 } from "@shopify/ui-extensions-react/checkout";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 export default reactExtension(
   "purchase.checkout.shipping-option-item.details.render",
@@ -19,24 +21,24 @@ export default reactExtension(
 const timeSlots = [
   [
     {
-      id: "0b19cc7b-0e98-4220-892d-acdd9bda13d9@1a2ceae1",
+      id: "d6310ee0-8559-4a83-b890-513a2406f2ea@bef86ae1",
       from_date: "2023-12-16T10:00:00+00:00",
       till_date: "2023-12-16T12:00:00+00:00",
     },
     {
-      id: "f5f1a93d-35c0-448d-a255-888baa67ff85@398646e1",
+      id: "d6310ee0-8559-4a83-b890-513a2406f2ea@ccb446e1",
       from_date: "2023-12-16T12:00:00+00:00",
       till_date: "2023-12-16T14:00:00+00:00",
     },
   ],
   [
     {
-      id: "f5f1a93d-35c0-448d-a255-888baa67ff85@4741aae1",
+      id: "d6310ee0-8559-4a83-b890-513a2406f2ea@da6faae1",
       from_date: "2023-12-16T14:00:00+00:00",
       till_date: "2023-12-16T16:00:00+00:00",
     },
     {
-      id: "f5f1a93d-35c0-448d-a255-888baa67ff85@54fd86e1",
+      id: "d6310ee0-8559-4a83-b890-513a2406f2ea@e8286e1",
       from_date: "2023-12-16T16:00:00+00:00",
       till_date: "2023-12-16T18:00:00+00:00",
     },
@@ -48,6 +50,8 @@ function Extension() {
 
   const [selectedDate, setSelectedDate] = useState();
   const [selectedTime, setSelectedTime] = useState();
+  const [isFetching, setIsFetching] = useState(false);
+  const [bookingData, setBookingData] = useState(null);
 
   useEffect(() => {
     const today = new Date();
@@ -77,7 +81,7 @@ function Extension() {
   const [options, setOptions] = useState([]);
 
   useEffect(() => {
-    const day = selectedDate === "2023-12-18" ? 0 : 1;
+    const day = selectedDate === "2023-12-19" ? 0 : 1;
     setOptions(
       timeSlots[day].map((interval) => ({
         value: interval.id,
@@ -100,16 +104,27 @@ function Extension() {
   };
 
   const makeBooking = async () => {
-    console.log("make booking");
-    await fetch("https://localhost:3000/confirmBooking", {
+    setBookingData(null);
+    setIsFetching(true);
+    const data = await fetch("https://localhost:3000/confirmBooking", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         time: selectedTime,
       }),
     });
-    console.log("made booking");
+    setIsFetching(false);
+
+    const parsedData = await data.json();
+    setBookingData(parsedData);
   };
+
+  const bookingTitle = useMemo(() => {
+    if (!bookingData) return "";
+    if (bookingData.error.message === "OK")
+      return `Booking successful 🎉 Reservation number: ${bookingData.booking_reference.number}`;
+    return `Booking failed. Error: ${bookingData.error.message}. Code: ${bookingData.error.code}`;
+  }, [bookingData]);
 
   return isAddLeeDeliverySelected() ? (
     <>
@@ -118,14 +133,18 @@ function Extension() {
           Selected date & time: {getDate()} - {getLabel(selectedTime)}
         </Text>
 
-        <Image src="./14X14.svg" />
-
-        <InlineLayout columns={["48%", "fill", "48%"]}>
+        <InlineLayout columns={["10%", "fill", "40%", "fill", "40%"]}>
+          <Image
+            source="https://svgur.com/i/112T.svg"
+            fit="cover"
+            aspectRatio={"1/1"}
+          />
+          <BlockStack />
           <DateField
             value={selectedDate}
             label="Delivery date"
             onChange={changeDate}
-            disabled={[{ end: "2023-12-17" }, { start: "2023-12-20" }]}
+            disabled={[{ end: "2023-12-18" }, { start: "2023-12-21" }]}
           />
           <BlockStack />
           <Select
@@ -134,10 +153,21 @@ function Extension() {
             onChange={changeTime}
             options={options}
           />
-          {/* {JSON.stringify(shippingOption)} */}
         </InlineLayout>
 
-        <Button onPress={makeBooking}>Make booking</Button>
+        <Button
+          onPress={makeBooking}
+          loading={isFetching}
+          disabled={isFetching}
+        >
+          Make booking
+        </Button>
+        {bookingData && (
+          <Banner
+            title={bookingTitle}
+            status={bookingData.error.message === "OK" ? "success" : "critical"}
+          />
+        )}
       </BlockStack>
     </>
   ) : null;

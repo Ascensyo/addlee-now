@@ -162,6 +162,7 @@ app.post("/confirmBooking", jsonParser, async function (req, res) {
       headers: {
         Authorization: `Basic TXVsZVNvZnRfaTE6R00yNU1tWWthZA==`,
         "Content-Type": "application/json",
+        Connection: "keep-alive",
       },
       body: JSON.stringify({
         vendor_reference: {
@@ -172,7 +173,7 @@ app.post("/confirmBooking", jsonParser, async function (req, res) {
         },
         booking: {
           product: "al_now_parcel",
-          time_slot_id: req.body?.time ?? "-",
+          time_slot_id: req.body.time,
           stops: [
             {
               type: "ADDRESS",
@@ -216,9 +217,13 @@ app.post("/confirmBooking", jsonParser, async function (req, res) {
       }),
     });
     data = await response.json();
+    console.log("data - ", data);
   } catch (error) {
+    console.log("error - ", error);
     data = error;
   }
+
+  console.log("finished");
 
   res.send(data);
 });
