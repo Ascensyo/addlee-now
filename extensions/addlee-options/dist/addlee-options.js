@@ -19608,9 +19608,11 @@ ${errorInfo.componentStack}`);
     };
     const changeDate = (date) => {
       setSelectedDate(date);
+      setBookingData(null);
     };
     const changeTime = (time) => {
       setSelectedTime(time);
+      setBookingData(null);
     };
     (0, import_react18.useEffect)(() => {
     }, [selectedDate]);
@@ -19694,7 +19696,7 @@ ${errorInfo.componentStack}`);
         {
           onPress: makeBooking,
           loading: isFetching,
-          disabled: isFetching,
+          disabled: isFetching || bookingData,
           children: "Make booking"
         }
       ),

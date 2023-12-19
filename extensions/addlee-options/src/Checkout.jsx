@@ -68,10 +68,12 @@ function Extension() {
 
   const changeDate = (date) => {
     setSelectedDate(date);
+    setBookingData(null);
   };
 
   const changeTime = (time) => {
     setSelectedTime(time);
+    setBookingData(null);
   };
 
   useEffect(() => {
@@ -158,7 +160,7 @@ function Extension() {
         <Button
           onPress={makeBooking}
           loading={isFetching}
-          disabled={isFetching}
+          disabled={isFetching || bookingData}
         >
           Make booking
         </Button>
