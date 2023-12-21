@@ -182,8 +182,9 @@ function Extension() {
   const makeBooking = async () => {
     setBookingData(null);
     setIsFetching(true);
+    console.log("selectedTime", selectedTime);
     try {
-      const data = await fetch("https://localhost:3000/confirmBooking", {
+      const data = await fetch("https://localhost:3000/confirmBookingManual", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

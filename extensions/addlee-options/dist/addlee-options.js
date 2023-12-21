@@ -19746,8 +19746,9 @@ ${errorInfo.componentStack}`);
     const makeBooking = () => __async(this, null, function* () {
       setBookingData(null);
       setIsFetching(true);
+      console.log("selectedTime", selectedTime);
       try {
-        const data = yield fetch("https://localhost:3000/confirmBooking", {
+        const data = yield fetch("https://localhost:3000/confirmBookingManual", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
