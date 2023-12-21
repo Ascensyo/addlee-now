@@ -1161,7 +1161,7 @@
             var dispatcher = resolveDispatcher();
             return dispatcher.useCallback(callback, deps);
           }
-          function useMemo3(create, deps) {
+          function useMemo4(create, deps) {
             var dispatcher = resolveDispatcher();
             return dispatcher.useMemo(create, deps);
           }
@@ -1932,7 +1932,7 @@
           exports.useImperativeHandle = useImperativeHandle;
           exports.useInsertionEffect = useInsertionEffect;
           exports.useLayoutEffect = useLayoutEffect;
-          exports.useMemo = useMemo3;
+          exports.useMemo = useMemo4;
           exports.useReducer = useReducer;
           exports.useRef = useRef2;
           exports.useState = useState3;
@@ -19547,6 +19547,16 @@ ${errorInfo.componentStack}`);
     return subscription.current;
   }
 
+  // node_modules/@shopify/ui-extensions-react/build/esm/surfaces/checkout/hooks/metafields.mjs
+  var import_react18 = __toESM(require_react(), 1);
+  function useApplyMetafieldsChange() {
+    const api = useApi();
+    if ("applyMetafieldChange" in api) {
+      return api.applyMetafieldChange;
+    }
+    throw new ExtensionHasNoMethodError("applyMetafieldChange", api.extension.target);
+  }
+
   // node_modules/@shopify/ui-extensions-react/build/esm/surfaces/checkout/hooks/delivery-groups.mjs
   function useDeliveryGroups() {
     const api = useApi();
@@ -19557,48 +19567,76 @@ ${errorInfo.componentStack}`);
   }
 
   // extensions/addlee-options/src/Checkout.jsx
-  var import_react18 = __toESM(require_react());
+  var import_react19 = __toESM(require_react());
+
+  // extensions/addlee-options/src/utils.js
+  var mapTimeSlotsRequest = (data) => {
+    return {
+      vendor_reference: {
+        customer_reference: {
+          account: "50"
+        }
+      },
+      booking: {
+        product: "al_now_parcel",
+        date: data.date,
+        stops: [
+          //First stop is the pickup location
+          //TO DO: Figure out how to get this
+          {
+            type: "ADDRESS",
+            formatted_address: "Addison Lee Ltd, Unit 1, 8-14 William Road, London, NW1 3EN",
+            location: {
+              lat: 51.52677917480469,
+              lon: -0.1403989940881729,
+              accuracy: 1
+            },
+            address_components: {
+              postal_code: "NW1 3EN",
+              city: "London",
+              country: "GB"
+            }
+          },
+          {
+            type: "ADDRESS",
+            formatted_address: `${data.shipping_address.address1}, ${data.shipping_address.city}, ${data.shipping_address.zip}`,
+            location: {
+              lat: data.shipping_address.latitude,
+              lon: data.shipping_address.longitude,
+              accuracy: 1
+            },
+            address_components: {
+              postal_code: data.shipping_address.zip,
+              city: data.shipping_address.city,
+              country: data.shipping_address.country_code
+            }
+          }
+        ]
+      }
+    };
+  };
+
+  // extensions/addlee-options/src/Checkout.jsx
   var import_jsx_runtime4 = __toESM(require_jsx_runtime());
   var Checkout_default = reactExtension(
     "purchase.checkout.shipping-option-item.details.render",
     () => /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(Extension, {})
   );
-  var timeSlots = [
-    [
-      {
-        id: "d6310ee0-8559-4a83-b890-513a2406f2ea@bef86ae1",
-        from_date: "2023-12-16T10:00:00+00:00",
-        till_date: "2023-12-16T12:00:00+00:00"
-      },
-      {
-        id: "d6310ee0-8559-4a83-b890-513a2406f2ea@ccb446e1",
-        from_date: "2023-12-16T12:00:00+00:00",
-        till_date: "2023-12-16T14:00:00+00:00"
-      }
-    ],
-    [
-      {
-        id: "d6310ee0-8559-4a83-b890-513a2406f2ea@da6faae1",
-        from_date: "2023-12-16T14:00:00+00:00",
-        till_date: "2023-12-16T16:00:00+00:00"
-      },
-      {
-        id: "d6310ee0-8559-4a83-b890-513a2406f2ea@e8286e1",
-        from_date: "2023-12-16T16:00:00+00:00",
-        till_date: "2023-12-16T18:00:00+00:00"
-      }
-    ]
-  ];
   function Extension() {
     const deliveryGroups = useDeliveryGroups();
-    const [selectedDate, setSelectedDate] = (0, import_react18.useState)();
-    const [selectedTime, setSelectedTime] = (0, import_react18.useState)();
-    const [isFetching, setIsFetching] = (0, import_react18.useState)(false);
-    const [bookingData, setBookingData] = (0, import_react18.useState)(null);
-    (0, import_react18.useEffect)(() => {
+    const [selectedDate, setSelectedDate] = (0, import_react19.useState)();
+    const [selectedTime, setSelectedTime] = (0, import_react19.useState)();
+    const [isFetching, setIsFetching] = (0, import_react19.useState)(false);
+    const [bookingData, setBookingData] = (0, import_react19.useState)(null);
+    const [timeSlots, setTimeSlots] = (0, import_react19.useState)([]);
+    const yesterday = (0, import_react19.useMemo)(() => {
       const today = /* @__PURE__ */ new Date();
-      setSelectedDate(formatDate(today));
+      today.setDate(today.getDate() - 1);
+      return today;
     }, []);
+    const metafieldNamespace = "yourAppNamespace";
+    const metafieldKey = "timeSlotId";
+    const applyMetafieldsChange = useApplyMetafieldsChange();
     const isAddLeeDeliverySelected = () => {
       var _a, _b;
       const expressHandle = (_a = deliveryGroups[0].deliveryOptions.find(
@@ -19614,19 +19652,82 @@ ${errorInfo.componentStack}`);
       setSelectedTime(time);
       setBookingData(null);
     };
-    (0, import_react18.useEffect)(() => {
+    (0, import_react19.useEffect)(() => {
+      try {
+        const today = /* @__PURE__ */ new Date();
+        today.setDate(today.getDate() + 1);
+        const fetchTimeSlots = () => __async(this, null, function* () {
+          var _a, _b;
+          const body = JSON.stringify(
+            mapTimeSlotsRequest({
+              date: today.toISOString().split("T")[0] + "T10:30:00",
+              shipping_address: {
+                address1: "Paddington Station",
+                city: "London",
+                zip: "W2 1HA",
+                latitude: 51.51748275756836,
+                longitude: -0.1782519966363907,
+                country_code: "GB"
+              }
+            })
+          );
+          const data = yield fetch("https://localhost:3000/timeSlots", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body
+          });
+          const parsedData = yield data.json();
+          setTimeSlots((_b = (_a = parsedData == null ? void 0 : parsedData.estimates) == null ? void 0 : _a.timeSlots) != null ? _b : []);
+        });
+        fetchTimeSlots();
+      } catch (err) {
+        console.log(err);
+      }
     }, [selectedDate]);
-    const [options, setOptions] = (0, import_react18.useState)([]);
-    (0, import_react18.useEffect)(() => {
-      const day = selectedDate === "2023-12-19" ? 0 : 1;
+    (0, import_react19.useEffect)(() => {
+      if (timeSlots.length > 0) {
+        setSelectedTime(timeSlots[0].id);
+      }
+    }, [timeSlots]);
+    (0, import_react19.useEffect)(() => {
+      if (selectedTime) {
+        try {
+          const fetchPrice = () => __async(this, null, function* () {
+            const body = JSON.stringify({
+              shipping_address: {
+                address1: "123 Main St",
+                city: "London",
+                zip: "W1W 8AX",
+                latitude: 51.516,
+                longitude: -0.13
+              }
+            });
+            const data = yield fetch("https://localhost:3000/timeSlotsPrices", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body
+            });
+            const parsedData = yield data.json();
+            console.log("parsedData", parsedData);
+          });
+          fetchPrice();
+        } catch (err) {
+          console.log(err);
+        }
+      }
+    }, [selectedTime]);
+    const [options, setOptions] = (0, import_react19.useState)([]);
+    (0, import_react19.useEffect)(() => {
+      if (timeSlots.length === 0)
+        return;
       setOptions(
-        timeSlots[day].map((interval) => ({
+        timeSlots.map((interval) => ({
           value: interval.id,
           label: formatTime(new Date(interval.from_date)) + " - " + formatTime(new Date(interval.till_date))
         }))
       );
-    }, [selectedDate]);
-    (0, import_react18.useEffect)(() => {
+    }, [selectedDate, timeSlots]);
+    (0, import_react19.useEffect)(() => {
       if (options.length > 0)
         setSelectedTime(options[0].value);
     }, [options]);
@@ -19636,18 +19737,24 @@ ${errorInfo.componentStack}`);
     const makeBooking = () => __async(this, null, function* () {
       setBookingData(null);
       setIsFetching(true);
-      const data = yield fetch("https://localhost:3000/confirmBooking", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          time: selectedTime
-        })
-      });
-      setIsFetching(false);
-      const parsedData = yield data.json();
-      setBookingData(parsedData);
+      try {
+        const data = yield fetch("https://localhost:3000/confirmBooking", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            time: selectedTime
+          })
+        });
+        setIsFetching(false);
+        const parsedData = yield data.json();
+        setBookingData(parsedData);
+      } catch (err) {
+        console.log(err);
+        yield new Promise((resolve) => setTimeout(resolve, 1e3));
+        setIsFetching(false);
+      }
     });
-    const bookingTitle = (0, import_react18.useMemo)(() => {
+    const bookingTitle = (0, import_react19.useMemo)(() => {
       if (!bookingData)
         return "";
       if (bookingData.error.message === "OK")
@@ -19658,8 +19765,9 @@ ${errorInfo.componentStack}`);
       /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)(Text2, { children: [
         "Selected date & time: ",
         getDate(),
-        " - ",
-        getLabel(selectedTime)
+        " -",
+        " ",
+        getLabel(selectedTime, timeSlots)
       ] }),
       /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)(InlineLayout2, { columns: ["10%", "fill", "40%", "fill", "40%"], children: [
         /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
@@ -19677,7 +19785,7 @@ ${errorInfo.componentStack}`);
             value: selectedDate,
             label: "Delivery date",
             onChange: changeDate,
-            disabled: [{ end: "2023-12-18" }, { start: "2023-12-21" }]
+            disabled: [{ end: formatDate(yesterday) }]
           }
         ),
         /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(BlockStack2, {}),
@@ -19720,7 +19828,7 @@ ${errorInfo.componentStack}`);
     const minutes = String(time.getMinutes()).padStart(2, "0");
     return `${hours}:${minutes}`;
   };
-  var getLabel = (timeSlotId) => {
+  var getLabel = (timeSlotId, timeSlots) => {
     if (!timeSlotId)
       return "-";
     const timeSlot = timeSlots.find(

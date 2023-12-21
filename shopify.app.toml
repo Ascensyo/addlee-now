@@ -2,26 +2,26 @@
 
 name = "AddLee Now"
 client_id = "81054b8def443db2e61797cf88dcc62b"
-application_url = "https://cabinets-widely-tba-mitchell.trycloudflare.com"
+application_url = "https://specialists-dictionaries-pantyhose-intelligence.trycloudflare.com"
 embedded = true
 
 [access_scopes]
 # Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
-scopes = "write_products,read_products,write_shipping,read_shipping,write_delivery_customizations"
+scopes = "write_products,read_products,write_shipping,read_shipping,write_delivery_customizations,read_orders"
 
 [auth]
 redirect_urls = [
-  "https://cabinets-widely-tba-mitchell.trycloudflare.com/auth/callback",
-  "https://cabinets-widely-tba-mitchell.trycloudflare.com/auth/shopify/callback",
-  "https://cabinets-widely-tba-mitchell.trycloudflare.com/api/auth/callback",
-  "https://cabinets-widely-tba-mitchell.trycloudflare.com/.shopify/graphiql/auth/callback"
+  "https://specialists-dictionaries-pantyhose-intelligence.trycloudflare.com/auth/callback",
+  "https://specialists-dictionaries-pantyhose-intelligence.trycloudflare.com/auth/shopify/callback",
+  "https://specialists-dictionaries-pantyhose-intelligence.trycloudflare.com/api/auth/callback",
+  "https://specialists-dictionaries-pantyhose-intelligence.trycloudflare.com/.shopify/graphiql/auth/callback"
 ]
 
 [webhooks]
 api_version = "2023-10"
 
 [app_proxy]
-url = "https://cabinets-widely-tba-mitchell.trycloudflare.com/api/2.0"
+url = "https://specialists-dictionaries-pantyhose-intelligence.trycloudflare.com/api/2.0"
 subpath = "affiliates-api-url"
 prefix = "tools"
 

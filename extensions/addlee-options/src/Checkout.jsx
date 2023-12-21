@@ -8,42 +8,16 @@ import {
   InlineLayout,
   Image,
   Button,
-  useShippingOptionTarget,
   Banner,
+  useApplyMetafieldsChange,
 } from "@shopify/ui-extensions-react/checkout";
 import { useEffect, useMemo, useState } from "react";
+import { mapTimeSlotsRequest } from "./utils";
 
 export default reactExtension(
   "purchase.checkout.shipping-option-item.details.render",
   () => <Extension />
 );
-
-const timeSlots = [
-  [
-    {
-      id: "d6310ee0-8559-4a83-b890-513a2406f2ea@bef86ae1",
-      from_date: "2023-12-16T10:00:00+00:00",
-      till_date: "2023-12-16T12:00:00+00:00",
-    },
-    {
-      id: "d6310ee0-8559-4a83-b890-513a2406f2ea@ccb446e1",
-      from_date: "2023-12-16T12:00:00+00:00",
-      till_date: "2023-12-16T14:00:00+00:00",
-    },
-  ],
-  [
-    {
-      id: "d6310ee0-8559-4a83-b890-513a2406f2ea@da6faae1",
-      from_date: "2023-12-16T14:00:00+00:00",
-      till_date: "2023-12-16T16:00:00+00:00",
-    },
-    {
-      id: "d6310ee0-8559-4a83-b890-513a2406f2ea@e8286e1",
-      from_date: "2023-12-16T16:00:00+00:00",
-      till_date: "2023-12-16T18:00:00+00:00",
-    },
-  ],
-];
 
 function Extension() {
   const deliveryGroups = useDeliveryGroups();
@@ -52,11 +26,33 @@ function Extension() {
   const [selectedTime, setSelectedTime] = useState();
   const [isFetching, setIsFetching] = useState(false);
   const [bookingData, setBookingData] = useState(null);
+  const [timeSlots, setTimeSlots] = useState([]);
 
-  useEffect(() => {
+  const yesterday = useMemo(() => {
     const today = new Date();
-    setSelectedDate(formatDate(today));
+    today.setDate(today.getDate() - 1);
+    return today;
   }, []);
+
+  const metafieldNamespace = "yourAppNamespace";
+  const metafieldKey = "timeSlotId";
+
+  // Set a function to handle updating a metafield
+  const applyMetafieldsChange = useApplyMetafieldsChange();
+
+  // useEffect(() => {
+  //   const id = "4d251181-f805-453f-811a-609e9046fe06@88f6ae1";
+
+  //   console.log("saving metafield");
+
+  //   applyMetafieldsChange({
+  //     type: "updateMetafield",
+  //     namespace: metafieldNamespace,
+  //     key: metafieldKey,
+  //     valueType: "string",
+  //     value: id,
+  //   });
+  // });
 
   const isAddLeeDeliverySelected = () => {
     const expressHandle = deliveryGroups[0].deliveryOptions.find(
@@ -77,15 +73,84 @@ function Extension() {
   };
 
   useEffect(() => {
-    //when date changes, call API to get available timeslots
+    try {
+      const today = new Date();
+      today.setDate(today.getDate() + 1);
+
+      const fetchTimeSlots = async () => {
+        const body = JSON.stringify(
+          mapTimeSlotsRequest({
+            date: today.toISOString().split("T")[0] + "T10:30:00",
+            shipping_address: {
+              address1: "Paddington Station",
+              city: "London",
+              zip: "W2 1HA",
+              latitude: 51.51748275756836,
+              longitude: -0.1782519966363907,
+              country_code: "GB",
+            },
+          })
+        );
+        const data = await fetch("https://localhost:3000/timeSlots", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body,
+        });
+
+        const parsedData = await data.json();
+        setTimeSlots(parsedData?.estimates?.timeSlots ?? []);
+      };
+
+      fetchTimeSlots();
+    } catch (err) {
+      console.log(err);
+    }
   }, [selectedDate]);
+
+  useEffect(() => {
+    if (timeSlots.length > 0) {
+      setSelectedTime(timeSlots[0].id);
+    }
+  }, [timeSlots]);
+
+  useEffect(() => {
+    if (selectedTime) {
+      try {
+        const fetchPrice = async () => {
+          const body = JSON.stringify({
+            shipping_address: {
+              address1: "123 Main St",
+              city: "London",
+              zip: "W1W 8AX",
+              latitude: 51.516,
+              longitude: -0.13,
+            },
+          });
+          const data = await fetch("https://localhost:3000/timeSlotsPrices", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body,
+          });
+
+          const parsedData = await data.json();
+          console.log("parsedData", parsedData);
+
+          //To do: update the price
+        };
+
+        fetchPrice();
+      } catch (err) {
+        console.log(err);
+      }
+    }
+  }, [selectedTime]);
 
   const [options, setOptions] = useState([]);
 
   useEffect(() => {
-    const day = selectedDate === "2023-12-19" ? 0 : 1;
+    if (timeSlots.length === 0) return;
     setOptions(
-      timeSlots[day].map((interval) => ({
+      timeSlots.map((interval) => ({
         value: interval.id,
         label:
           formatTime(new Date(interval.from_date)) +
@@ -93,13 +158,11 @@ function Extension() {
           formatTime(new Date(interval.till_date)),
       }))
     );
-  }, [selectedDate]);
+  }, [selectedDate, timeSlots]);
 
   useEffect(() => {
     if (options.length > 0) setSelectedTime(options[0].value);
   }, [options]);
-
-  // const shippingOption = useShippingOptionTarget();
 
   const getDate = () => {
     return selectedDate?.split("-").reverse().join("-");
@@ -108,17 +171,23 @@ function Extension() {
   const makeBooking = async () => {
     setBookingData(null);
     setIsFetching(true);
-    const data = await fetch("https://localhost:3000/confirmBooking", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        time: selectedTime,
-      }),
-    });
-    setIsFetching(false);
+    try {
+      const data = await fetch("https://localhost:3000/confirmBooking", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          time: selectedTime,
+        }),
+      });
+      setIsFetching(false);
 
-    const parsedData = await data.json();
-    setBookingData(parsedData);
+      const parsedData = await data.json();
+      setBookingData(parsedData);
+    } catch (err) {
+      console.log(err);
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      setIsFetching(false);
+    }
   };
 
   const bookingTitle = useMemo(() => {
@@ -132,7 +201,8 @@ function Extension() {
     <>
       <BlockStack>
         <Text>
-          Selected date & time: {getDate()} - {getLabel(selectedTime)}
+          Selected date & time: {getDate()} -{" "}
+          {getLabel(selectedTime, timeSlots)}
         </Text>
 
         <InlineLayout columns={["10%", "fill", "40%", "fill", "40%"]}>
@@ -146,7 +216,7 @@ function Extension() {
             value={selectedDate}
             label="Delivery date"
             onChange={changeDate}
-            disabled={[{ end: "2023-12-18" }, { start: "2023-12-21" }]}
+            disabled={[{ end: formatDate(yesterday) }]}
           />
           <BlockStack />
           <Select
@@ -188,7 +258,7 @@ const formatTime = (time) => {
   return `${hours}:${minutes}`;
 };
 
-const getLabel = (timeSlotId) => {
+const getLabel = (timeSlotId, timeSlots) => {
   if (!timeSlotId) return "-";
 
   const timeSlot = timeSlots.find((slot) =>
