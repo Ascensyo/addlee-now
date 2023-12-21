@@ -73,42 +73,52 @@ function Extension() {
   };
 
   useEffect(() => {
-    try {
-      const today = new Date();
-      today.setDate(today.getDate() + 1);
+    const today = new Date();
+    today.setDate(today.getDate() + 1);
+    setSelectedDate(formatDate(today));
+  }, []);
 
-      const fetchTimeSlots = async () => {
-        const body = JSON.stringify(
-          mapTimeSlotsRequest({
-            date: today.toISOString().split("T")[0] + "T10:30:00",
-            shipping_address: {
-              address1: "Paddington Station",
-              city: "London",
-              zip: "W2 1HA",
-              latitude: 51.51748275756836,
-              longitude: -0.1782519966363907,
-              country_code: "GB",
-            },
-          })
-        );
-        const data = await fetch("https://localhost:3000/timeSlots", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body,
-        });
+  useEffect(() => {
+    if (selectedDate) {
+      try {
+        const fetchTimeSlots = async () => {
+          const body = JSON.stringify(
+            mapTimeSlotsRequest({
+              date: selectedDate + "T10:30:00",
+              shipping_address: {
+                address1: "Paddington Station",
+                city: "London",
+                zip: "W2 1HA",
+                latitude: 51.51748275756836,
+                longitude: -0.1782519966363907,
+                country_code: "GB",
+              },
+            })
+          );
+          const data = await fetch("https://localhost:3000/timeSlots", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body,
+          });
 
-        const parsedData = await data.json();
-        setTimeSlots(parsedData?.estimates?.timeSlots ?? []);
-      };
+          const parsedData = await data.json();
+          console.log(parsedData);
+          setTimeSlots(
+            parsedData?.estimates?.length > 0
+              ? parsedData.estimates[0].time_slots
+              : []
+          );
+        };
 
-      fetchTimeSlots();
-    } catch (err) {
-      console.log(err);
+        fetchTimeSlots();
+      } catch (err) {
+        console.log(err);
+      }
     }
   }, [selectedDate]);
 
   useEffect(() => {
-    if (timeSlots.length > 0) {
+    if (timeSlots?.length > 0) {
       setSelectedTime(timeSlots[0].id);
     }
   }, [timeSlots]);
@@ -148,7 +158,8 @@ function Extension() {
   const [options, setOptions] = useState([]);
 
   useEffect(() => {
-    if (timeSlots.length === 0) return;
+    console.log(timeSlots);
+    if (!timeSlots || timeSlots.length === 0) return;
     setOptions(
       timeSlots.map((interval) => ({
         value: interval.id,
@@ -259,12 +270,11 @@ const formatTime = (time) => {
 };
 
 const getLabel = (timeSlotId, timeSlots) => {
-  if (!timeSlotId) return "-";
+  if (!timeSlotId || !timeSlots || timeSlots.length === 0) return "-";
 
-  const timeSlot = timeSlots.find((slot) =>
-    slot.find((interval) => interval.id === timeSlotId)
-  );
-  const interval = timeSlot.find((interval) => interval.id === timeSlotId);
+  const interval = timeSlots.find((interval) => interval.id === timeSlotId);
+  if (!interval) return "-";
+
   return (
     formatTime(new Date(interval.from_date)) +
     " - " +

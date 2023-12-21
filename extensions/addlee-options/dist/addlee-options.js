@@ -19653,39 +19653,47 @@ ${errorInfo.componentStack}`);
       setBookingData(null);
     };
     (0, import_react19.useEffect)(() => {
-      try {
-        const today = /* @__PURE__ */ new Date();
-        today.setDate(today.getDate() + 1);
-        const fetchTimeSlots = () => __async(this, null, function* () {
-          var _a, _b;
-          const body = JSON.stringify(
-            mapTimeSlotsRequest({
-              date: today.toISOString().split("T")[0] + "T10:30:00",
-              shipping_address: {
-                address1: "Paddington Station",
-                city: "London",
-                zip: "W2 1HA",
-                latitude: 51.51748275756836,
-                longitude: -0.1782519966363907,
-                country_code: "GB"
-              }
-            })
-          );
-          const data = yield fetch("https://localhost:3000/timeSlots", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body
+      const today = /* @__PURE__ */ new Date();
+      today.setDate(today.getDate() + 1);
+      setSelectedDate(formatDate(today));
+    }, []);
+    (0, import_react19.useEffect)(() => {
+      if (selectedDate) {
+        try {
+          const fetchTimeSlots = () => __async(this, null, function* () {
+            var _a;
+            const body = JSON.stringify(
+              mapTimeSlotsRequest({
+                date: selectedDate + "T10:30:00",
+                shipping_address: {
+                  address1: "Paddington Station",
+                  city: "London",
+                  zip: "W2 1HA",
+                  latitude: 51.51748275756836,
+                  longitude: -0.1782519966363907,
+                  country_code: "GB"
+                }
+              })
+            );
+            const data = yield fetch("https://localhost:3000/timeSlots", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body
+            });
+            const parsedData = yield data.json();
+            console.log(parsedData);
+            setTimeSlots(
+              ((_a = parsedData == null ? void 0 : parsedData.estimates) == null ? void 0 : _a.length) > 0 ? parsedData.estimates[0].time_slots : []
+            );
           });
-          const parsedData = yield data.json();
-          setTimeSlots((_b = (_a = parsedData == null ? void 0 : parsedData.estimates) == null ? void 0 : _a.timeSlots) != null ? _b : []);
-        });
-        fetchTimeSlots();
-      } catch (err) {
-        console.log(err);
+          fetchTimeSlots();
+        } catch (err) {
+          console.log(err);
+        }
       }
     }, [selectedDate]);
     (0, import_react19.useEffect)(() => {
-      if (timeSlots.length > 0) {
+      if ((timeSlots == null ? void 0 : timeSlots.length) > 0) {
         setSelectedTime(timeSlots[0].id);
       }
     }, [timeSlots]);
@@ -19718,7 +19726,8 @@ ${errorInfo.componentStack}`);
     }, [selectedTime]);
     const [options, setOptions] = (0, import_react19.useState)([]);
     (0, import_react19.useEffect)(() => {
-      if (timeSlots.length === 0)
+      console.log(timeSlots);
+      if (!timeSlots || timeSlots.length === 0)
         return;
       setOptions(
         timeSlots.map((interval) => ({
@@ -19829,12 +19838,11 @@ ${errorInfo.componentStack}`);
     return `${hours}:${minutes}`;
   };
   var getLabel = (timeSlotId, timeSlots) => {
-    if (!timeSlotId)
+    if (!timeSlotId || !timeSlots || timeSlots.length === 0)
       return "-";
-    const timeSlot = timeSlots.find(
-      (slot) => slot.find((interval2) => interval2.id === timeSlotId)
-    );
-    const interval = timeSlot.find((interval2) => interval2.id === timeSlotId);
+    const interval = timeSlots.find((interval2) => interval2.id === timeSlotId);
+    if (!interval)
+      return "-";
     return formatTime(new Date(interval.from_date)) + " - " + formatTime(new Date(interval.till_date));
   };
 })();
