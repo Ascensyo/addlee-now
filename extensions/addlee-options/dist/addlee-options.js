@@ -19656,7 +19656,8 @@ ${errorInfo.componentStack}`);
     const applyMetafieldsChange = useApplyMetafieldsChange();
     const metafields = useMetafields();
     (0, import_react19.useEffect)(() => {
-      const id = "4d3251181-f805-453f-811a-609e9046fe06@88f6ae1";
+      if (!selectedTime)
+        return;
       console.log("saving metafield");
       const updateMetafield = () => __async(this, null, function* () {
         const result = yield applyMetafieldsChange({
@@ -19664,12 +19665,12 @@ ${errorInfo.componentStack}`);
           namespace: metafieldNamespace,
           key: metafieldKey,
           valueType: "string",
-          value: id
+          value: selectedTime
         });
         console.log("result", result);
       });
       updateMetafield();
-    }, []);
+    }, [selectedTime, applyMetafieldsChange]);
     const isAddLeeDeliverySelected = () => {
       var _a, _b;
       const expressHandle = (_a = deliveryGroups[0].deliveryOptions.find(

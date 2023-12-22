@@ -44,8 +44,7 @@ function Extension() {
   const metafields = useMetafields();
 
   useEffect(() => {
-    const id = "4d3251181-f805-453f-811a-609e9046fe06@88f6ae1";
-
+    if (!selectedTime) return;
     console.log("saving metafield");
 
     const updateMetafield = async () => {
@@ -54,14 +53,14 @@ function Extension() {
         namespace: metafieldNamespace,
         key: metafieldKey,
         valueType: "string",
-        value: id,
+        value: selectedTime,
       });
 
       console.log("result", result);
     };
 
     updateMetafield();
-  }, []);
+  }, [selectedTime, applyMetafieldsChange]);
 
   const isAddLeeDeliverySelected = () => {
     const expressHandle = deliveryGroups[0].deliveryOptions.find(

@@ -1,16 +1,16 @@
 import { randomUUID } from "crypto";
 
-export const mapPayloadToBooking = (payload) => {
+export const mapPayloadToBooking = (payload, timeSlotId) => {
   return {
     vendor_reference: {
       id: randomUUID(),
       customer_reference: {
-        account: 50,
+        account: "50",
       },
     },
     booking: {
       product: "al_now_parcel",
-      time_slot_id: "{{time_slot_id.1}}", //To do: Figure out how to get this
+      time_slot_id: timeSlotId, //To do: Figure out how to get this
       stops: [
         //First stop is the pickup location
         //TO DO: Figure out how to get this

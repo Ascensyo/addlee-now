@@ -52,12 +52,12 @@ export const action = async ({ request }) => {
           const timeSlotId = await query();
           console.log("timeSlotId", timeSlotId);
 
-          const body = mapPayloadToBooking(payload);
+          const body = mapPayloadToBooking(payload, timeSlotId);
           console.log("body", body);
 
           await fetch("https://localhost:3000/confirmBooking", {
             agent: httpsAgent,
-            body: JSON.stringify(mapPayloadToBooking(payload)),
+            body: JSON.stringify(mapPayloadToBooking(payload, timeSlotId)),
             method: "POST",
             headers: {
               "Content-Type": "application/json",
