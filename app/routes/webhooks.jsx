@@ -13,12 +13,29 @@ export const action = async ({ request }) => {
     request
   );
 
+  const query = async () => {
+    const response = await admin.graphql(
+      `query {
+        order(id: "${payload.admin_graphql_api_id}") {
+          metafield(namespace: "custom", key: "timeSlot") {
+            id
+            value
+          }
+        }
+      }
+      `
+    );
+
+    const parsed = await response.json();
+    return parsed.data.order.metafield.value;
+  };
+
   console.log("gets here");
 
-  // if (!admin) {
-  //   // The admin context isn't returned if the webhook fired after a shop was uninstalled.
-  //   throw new Response();
-  // }
+  if (!admin) {
+    // The admin context isn't returned if the webhook fired after a shop was uninstalled.
+    throw new Response();
+  }
 
   console.log("webhook fired", topic, shop, session, admin, payload);
 
@@ -32,6 +49,9 @@ export const action = async ({ request }) => {
     case "ORDERS_CREATE":
       if (payload.shipping_lines[0].title === "AddLee Now") {
         try {
+          const timeSlotId = await query();
+          console.log("timeSlotId", timeSlotId);
+
           const body = mapPayloadToBooking(payload);
           console.log("body", body);
 

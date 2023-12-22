@@ -19549,6 +19549,23 @@ ${errorInfo.componentStack}`);
 
   // node_modules/@shopify/ui-extensions-react/build/esm/surfaces/checkout/hooks/metafields.mjs
   var import_react18 = __toESM(require_react(), 1);
+  function useMetafields(filters) {
+    const metaFields = useSubscription(useApi().metafields);
+    return (0, import_react18.useMemo)(() => {
+      if (filters) {
+        const {
+          namespace,
+          key
+        } = filters;
+        if (!namespace) {
+          throw new CheckoutUIExtensionError("You must pass in a namespace with a key");
+        }
+        const filteredResults = metaFields.filter((metafield) => metafield.namespace === namespace && (!key || metafield.key === key));
+        return filteredResults;
+      }
+      return metaFields;
+    }, [filters, metaFields]);
+  }
   function useApplyMetafieldsChange() {
     const api = useApi();
     if ("applyMetafieldChange" in api) {
@@ -19634,9 +19651,25 @@ ${errorInfo.componentStack}`);
       today.setDate(today.getDate() - 1);
       return today;
     }, []);
-    const metafieldNamespace = "yourAppNamespace";
-    const metafieldKey = "timeSlotId";
+    const metafieldNamespace = "custom";
+    const metafieldKey = "timeSlot";
     const applyMetafieldsChange = useApplyMetafieldsChange();
+    const metafields = useMetafields();
+    (0, import_react19.useEffect)(() => {
+      const id = "4d3251181-f805-453f-811a-609e9046fe06@88f6ae1";
+      console.log("saving metafield");
+      const updateMetafield = () => __async(this, null, function* () {
+        const result = yield applyMetafieldsChange({
+          type: "updateMetafield",
+          namespace: metafieldNamespace,
+          key: metafieldKey,
+          valueType: "string",
+          value: id
+        });
+        console.log("result", result);
+      });
+      updateMetafield();
+    }, []);
     const isAddLeeDeliverySelected = () => {
       var _a, _b;
       const expressHandle = (_a = deliveryGroups[0].deliveryOptions.find(
@@ -19659,6 +19692,10 @@ ${errorInfo.componentStack}`);
     }, []);
     (0, import_react19.useEffect)(() => {
       if (selectedDate) {
+        const updateMetafield = () => __async(this, null, function* () {
+          console.log("result metafield", metafields);
+        });
+        updateMetafield();
         try {
           const fetchTimeSlots = () => __async(this, null, function* () {
             var _a;
@@ -19681,7 +19718,6 @@ ${errorInfo.componentStack}`);
               body
             });
             const parsedData = yield data.json();
-            console.log(parsedData);
             setTimeSlots(
               ((_a = parsedData == null ? void 0 : parsedData.estimates) == null ? void 0 : _a.length) > 0 ? parsedData.estimates[0].time_slots : []
             );
@@ -19716,7 +19752,6 @@ ${errorInfo.componentStack}`);
               body
             });
             const parsedData = yield data.json();
-            console.log("parsedData", parsedData);
           });
           fetchPrice();
         } catch (err) {
@@ -19726,7 +19761,6 @@ ${errorInfo.componentStack}`);
     }, [selectedTime]);
     const [options, setOptions] = (0, import_react19.useState)([]);
     (0, import_react19.useEffect)(() => {
-      console.log(timeSlots);
       if (!timeSlots || timeSlots.length === 0)
         return;
       setOptions(
@@ -19746,7 +19780,6 @@ ${errorInfo.componentStack}`);
     const makeBooking = () => __async(this, null, function* () {
       setBookingData(null);
       setIsFetching(true);
-      console.log("selectedTime", selectedTime);
       try {
         const data = yield fetch("https://localhost:3000/confirmBookingManual", {
           method: "POST",

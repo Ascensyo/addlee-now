@@ -10,6 +10,8 @@ import {
   Button,
   Banner,
   useApplyMetafieldsChange,
+  useAppMetafields,
+  useMetafields,
 } from "@shopify/ui-extensions-react/checkout";
 import { useEffect, useMemo, useState } from "react";
 import { mapTimeSlotsRequest } from "./utils";
@@ -34,25 +36,32 @@ function Extension() {
     return today;
   }, []);
 
-  const metafieldNamespace = "yourAppNamespace";
-  const metafieldKey = "timeSlotId";
+  const metafieldNamespace = "custom";
+  const metafieldKey = "timeSlot";
 
   // Set a function to handle updating a metafield
   const applyMetafieldsChange = useApplyMetafieldsChange();
+  const metafields = useMetafields();
 
-  // useEffect(() => {
-  //   const id = "4d251181-f805-453f-811a-609e9046fe06@88f6ae1";
+  useEffect(() => {
+    const id = "4d3251181-f805-453f-811a-609e9046fe06@88f6ae1";
 
-  //   console.log("saving metafield");
+    console.log("saving metafield");
 
-  //   applyMetafieldsChange({
-  //     type: "updateMetafield",
-  //     namespace: metafieldNamespace,
-  //     key: metafieldKey,
-  //     valueType: "string",
-  //     value: id,
-  //   });
-  // });
+    const updateMetafield = async () => {
+      const result = await applyMetafieldsChange({
+        type: "updateMetafield",
+        namespace: metafieldNamespace,
+        key: metafieldKey,
+        valueType: "string",
+        value: id,
+      });
+
+      console.log("result", result);
+    };
+
+    updateMetafield();
+  }, []);
 
   const isAddLeeDeliverySelected = () => {
     const expressHandle = deliveryGroups[0].deliveryOptions.find(
@@ -80,6 +89,13 @@ function Extension() {
 
   useEffect(() => {
     if (selectedDate) {
+      //get metafield
+      const updateMetafield = async () => {
+        console.log("result metafield", metafields);
+      };
+
+      updateMetafield();
+
       try {
         const fetchTimeSlots = async () => {
           const body = JSON.stringify(
@@ -102,7 +118,7 @@ function Extension() {
           });
 
           const parsedData = await data.json();
-          console.log(parsedData);
+          //console.log(parsedData);
           setTimeSlots(
             parsedData?.estimates?.length > 0
               ? parsedData.estimates[0].time_slots
@@ -143,7 +159,7 @@ function Extension() {
           });
 
           const parsedData = await data.json();
-          console.log("parsedData", parsedData);
+          //console.log("parsedData", parsedData);
 
           //To do: update the price
         };
@@ -158,7 +174,7 @@ function Extension() {
   const [options, setOptions] = useState([]);
 
   useEffect(() => {
-    console.log(timeSlots);
+    //console.log(timeSlots);
     if (!timeSlots || timeSlots.length === 0) return;
     setOptions(
       timeSlots.map((interval) => ({
@@ -182,7 +198,7 @@ function Extension() {
   const makeBooking = async () => {
     setBookingData(null);
     setIsFetching(true);
-    console.log("selectedTime", selectedTime);
+    //console.log("selectedTime", selectedTime);
     try {
       const data = await fetch("https://localhost:3000/confirmBookingManual", {
         method: "POST",
