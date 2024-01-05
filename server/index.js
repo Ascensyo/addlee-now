@@ -24,8 +24,9 @@ app.get("/", (req, res) => {
 
 app.post("/timeSlots", jsonParser, async function (req, res) {
   console.log("API timeSlots reached");
-  console.log(req.body);
   const fullUrl = "https://partners.addleetest.net/api/2.0/estimates";
+
+  console.log(JSON.stringify(req.body));
 
   let data = "nothing";
   try {
@@ -43,12 +44,14 @@ app.post("/timeSlots", jsonParser, async function (req, res) {
     data = error;
   }
 
+  console.log(data);
+
   res.send(data);
 });
 
-app.post("/timeSlotsPrices", async function (req, res) {
+app.post("/timeSlotsPrices", jsonParser, async function (req, res) {
   console.log("API timeSlotsPrices reached");
-  console.log(req.body);
+  console.log("body - ", req.body);
 
   const fullUrl = "https://partners.addleetest.net/api/2.0/estimates";
 
@@ -64,8 +67,10 @@ app.post("/timeSlotsPrices", async function (req, res) {
     });
 
     data = await response.json();
+    console.log("data - ", data);
   } catch (error) {
     data = error;
+    console.log("error - ", error);
   }
 
   res.send(data);

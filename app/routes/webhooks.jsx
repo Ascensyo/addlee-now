@@ -26,6 +26,20 @@ export const action = async ({ request }) => {
       `
     );
 
+    const response2 = await admin.graphql(
+      `query {
+        order(id: "${payload.admin_graphql_api_id}") {
+          fulfillments(first: 10) {
+            id
+          }
+        }
+      }
+      `
+    );
+
+    const parsed2 = await response2.json();
+    console.log("response2", parsed2.data);
+
     const parsed = await response.json();
     return parsed.data.order.metafield.value;
   };
@@ -50,10 +64,10 @@ export const action = async ({ request }) => {
       if (payload.shipping_lines[0].title === "AddLee Now") {
         try {
           const timeSlotId = await query();
-          console.log("timeSlotId", timeSlotId);
+          //console.log("timeSlotId", timeSlotId);
 
           const body = mapPayloadToBooking(payload, timeSlotId);
-          console.log("body", body);
+          //console.log("body", body);
 
           await fetch("https://localhost:3000/confirmBooking", {
             agent: httpsAgent,
@@ -63,6 +77,8 @@ export const action = async ({ request }) => {
               "Content-Type": "application/json",
             },
           });
+
+          // save tracking number for the order
         } catch (error) {
           console.log("error", error);
         }

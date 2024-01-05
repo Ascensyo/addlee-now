@@ -54,7 +54,7 @@ export const mapTimeSlotsPricesRequest = (data) => {
     },
     booking: {
       product: "al_now_parcel",
-      date: data.date,
+      time_slot_id: data.time_slot_id,
       stops: [
         //First stop is the pickup location
         //TO DO: Figure out how to get this
@@ -70,6 +70,7 @@ export const mapTimeSlotsPricesRequest = (data) => {
           address_components: {
             postal_code: "NW1 3EN",
             city: "London",
+            country: "GB",
           },
         },
         {
@@ -83,9 +84,36 @@ export const mapTimeSlotsPricesRequest = (data) => {
           address_components: {
             postal_code: data.shipping_address.zip,
             city: data.shipping_address.city,
+            country: data.shipping_address.country_code,
           },
         },
       ],
     },
   };
+};
+
+export const formatDate = (date) => {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+};
+
+export const formatTime = (time) => {
+  const hours = String(time.getHours()).padStart(2, "0");
+  const minutes = String(time.getMinutes()).padStart(2, "0");
+  return `${hours}:${minutes}`;
+};
+
+export const getLabel = (timeSlotId, timeSlots) => {
+  if (!timeSlotId || !timeSlots || timeSlots.length === 0) return "-";
+
+  const interval = timeSlots.find((interval) => interval.id === timeSlotId);
+  if (!interval) return "-";
+
+  return (
+    formatTime(new Date(interval.from_date)) +
+    " - " +
+    formatTime(new Date(interval.till_date))
+  );
 };

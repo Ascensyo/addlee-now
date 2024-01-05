@@ -19121,14 +19121,8 @@
   // node_modules/@shopify/ui-extensions/build/esm/surfaces/checkout/extension.mjs
   var extension = createExtensionRegistrationFunction();
 
-  // node_modules/@shopify/ui-extensions/build/esm/surfaces/checkout/components/Banner/Banner.mjs
-  var Banner = createRemoteComponent("Banner");
-
   // node_modules/@shopify/ui-extensions/build/esm/surfaces/checkout/components/BlockStack/BlockStack.mjs
   var BlockStack = createRemoteComponent("BlockStack");
-
-  // node_modules/@shopify/ui-extensions/build/esm/surfaces/checkout/components/Button/Button.mjs
-  var Button = createRemoteComponent("Button");
 
   // node_modules/@shopify/ui-extensions/build/esm/surfaces/checkout/components/DateField/DateField.mjs
   var DateField = createRemoteComponent("DateField");
@@ -19473,16 +19467,8 @@ ${errorInfo.componentStack}`);
     }
   };
 
-  // node_modules/@shopify/ui-extensions-react/build/esm/surfaces/checkout/components/Banner/Banner.mjs
-  var Banner2 = createRemoteReactComponent(Banner);
-
   // node_modules/@shopify/ui-extensions-react/build/esm/surfaces/checkout/components/BlockStack/BlockStack.mjs
   var BlockStack2 = createRemoteReactComponent(BlockStack);
-
-  // node_modules/@shopify/ui-extensions-react/build/esm/surfaces/checkout/components/Button/Button.mjs
-  var Button2 = createRemoteReactComponent(Button, {
-    fragmentProps: ["overlay"]
-  });
 
   // node_modules/@shopify/ui-extensions-react/build/esm/surfaces/checkout/components/DateField/DateField.mjs
   var DateField2 = createRemoteReactComponent(DateField);
@@ -19500,7 +19486,7 @@ ${errorInfo.componentStack}`);
   var Text2 = createRemoteReactComponent(Text);
 
   // node_modules/@shopify/ui-extensions-react/build/esm/surfaces/checkout/hooks/api.mjs
-  var import_react16 = __toESM(require_react(), 1);
+  var import_react14 = __toESM(require_react(), 1);
 
   // node_modules/@shopify/ui-extensions-react/build/esm/surfaces/checkout/errors.mjs
   var CheckoutUIExtensionError = class extends Error {
@@ -19518,7 +19504,7 @@ ${errorInfo.componentStack}`);
 
   // node_modules/@shopify/ui-extensions-react/build/esm/surfaces/checkout/hooks/api.mjs
   function useApi(_target) {
-    const api = (0, import_react16.useContext)(ExtensionApiContext);
+    const api = (0, import_react14.useContext)(ExtensionApiContext);
     if (api == null) {
       throw new CheckoutUIExtensionError("You can only call this hook when running as a UI extension.");
     }
@@ -19526,10 +19512,10 @@ ${errorInfo.componentStack}`);
   }
 
   // node_modules/@shopify/ui-extensions-react/build/esm/surfaces/checkout/hooks/subscription.mjs
-  var import_react17 = __toESM(require_react(), 1);
+  var import_react15 = __toESM(require_react(), 1);
   function useSubscription(subscription) {
-    const [, setValue] = (0, import_react17.useState)(subscription.current);
-    (0, import_react17.useEffect)(() => {
+    const [, setValue] = (0, import_react15.useState)(subscription.current);
+    (0, import_react15.useEffect)(() => {
       let didUnsubscribe = false;
       const checkForUpdates = (newValue) => {
         if (didUnsubscribe) {
@@ -19548,24 +19534,7 @@ ${errorInfo.componentStack}`);
   }
 
   // node_modules/@shopify/ui-extensions-react/build/esm/surfaces/checkout/hooks/metafields.mjs
-  var import_react18 = __toESM(require_react(), 1);
-  function useMetafields(filters) {
-    const metaFields = useSubscription(useApi().metafields);
-    return (0, import_react18.useMemo)(() => {
-      if (filters) {
-        const {
-          namespace,
-          key
-        } = filters;
-        if (!namespace) {
-          throw new CheckoutUIExtensionError("You must pass in a namespace with a key");
-        }
-        const filteredResults = metaFields.filter((metafield) => metafield.namespace === namespace && (!key || metafield.key === key));
-        return filteredResults;
-      }
-      return metaFields;
-    }, [filters, metaFields]);
-  }
+  var import_react16 = __toESM(require_react(), 1);
   function useApplyMetafieldsChange() {
     const api = useApi();
     if ("applyMetafieldChange" in api) {
@@ -19584,7 +19553,7 @@ ${errorInfo.componentStack}`);
   }
 
   // extensions/addlee-options/src/Checkout.jsx
-  var import_react19 = __toESM(require_react());
+  var import_react17 = __toESM(require_react());
 
   // extensions/addlee-options/src/utils.js
   var mapTimeSlotsRequest = (data) => {
@@ -19632,21 +19601,93 @@ ${errorInfo.componentStack}`);
       }
     };
   };
+  var mapTimeSlotsPricesRequest = (data) => {
+    return {
+      vendor_reference: {
+        customer_reference: {
+          account: "50"
+        }
+      },
+      booking: {
+        product: "al_now_parcel",
+        time_slot_id: data.time_slot_id,
+        stops: [
+          //First stop is the pickup location
+          //TO DO: Figure out how to get this
+          {
+            type: "ADDRESS",
+            formatted_address: "Addison Lee Ltd, Unit 1, 8-14 William Road, London, NW1 3EN",
+            location: {
+              lat: 51.52677917480469,
+              lon: -0.1403989940881729,
+              accuracy: 1
+            },
+            address_components: {
+              postal_code: "NW1 3EN",
+              city: "London",
+              country: "GB"
+            }
+          },
+          {
+            type: "ADDRESS",
+            formatted_address: `${data.shipping_address.address1}, ${data.shipping_address.city}, ${data.shipping_address.zip}`,
+            location: {
+              lat: data.shipping_address.latitude,
+              lon: data.shipping_address.longitude,
+              accuracy: 1
+            },
+            address_components: {
+              postal_code: data.shipping_address.zip,
+              city: data.shipping_address.city,
+              country: data.shipping_address.country_code
+            }
+          }
+        ]
+      }
+    };
+  };
+  var formatDate = (date) => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
+  var formatTime = (time) => {
+    const hours = String(time.getHours()).padStart(2, "0");
+    const minutes = String(time.getMinutes()).padStart(2, "0");
+    return `${hours}:${minutes}`;
+  };
+  var getLabel = (timeSlotId, timeSlots) => {
+    if (!timeSlotId || !timeSlots || timeSlots.length === 0)
+      return "-";
+    const interval = timeSlots.find((interval2) => interval2.id === timeSlotId);
+    if (!interval)
+      return "-";
+    return formatTime(new Date(interval.from_date)) + " - " + formatTime(new Date(interval.till_date));
+  };
 
   // extensions/addlee-options/src/Checkout.jsx
   var import_jsx_runtime4 = __toESM(require_jsx_runtime());
   var Checkout_default = reactExtension(
     "purchase.checkout.shipping-option-item.details.render",
-    () => /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(Extension, {})
+    (target) => /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(Extension, { target })
   );
-  function Extension() {
+  function Extension({ target }) {
     const deliveryGroups = useDeliveryGroups();
-    const [selectedDate, setSelectedDate] = (0, import_react19.useState)();
-    const [selectedTime, setSelectedTime] = (0, import_react19.useState)();
-    const [isFetching, setIsFetching] = (0, import_react19.useState)(false);
-    const [bookingData, setBookingData] = (0, import_react19.useState)(null);
-    const [timeSlots, setTimeSlots] = (0, import_react19.useState)([]);
-    const yesterday = (0, import_react19.useMemo)(() => {
+    const { shippingAddress } = useApi();
+    const [selectedDate, setSelectedDate] = (0, import_react17.useState)();
+    const [selectedTime, setSelectedTime] = (0, import_react17.useState)();
+    const [isFetching, setIsFetching] = (0, import_react17.useState)(false);
+    const [timeSlots, setTimeSlots] = (0, import_react17.useState)([]);
+    const [clientAddress, setClientAddress] = (0, import_react17.useState)();
+    const [options, setOptions] = (0, import_react17.useState)([]);
+    const handler = (address) => {
+      setClientAddress(address);
+    };
+    (0, import_react17.useEffect)(() => {
+      shippingAddress.subscribe(handler);
+    }, []);
+    const yesterday = (0, import_react17.useMemo)(() => {
       const today = /* @__PURE__ */ new Date();
       today.setDate(today.getDate() - 1);
       return today;
@@ -19654,11 +19695,9 @@ ${errorInfo.componentStack}`);
     const metafieldNamespace = "custom";
     const metafieldKey = "timeSlot";
     const applyMetafieldsChange = useApplyMetafieldsChange();
-    const metafields = useMetafields();
-    (0, import_react19.useEffect)(() => {
+    (0, import_react17.useEffect)(() => {
       if (!selectedTime)
         return;
-      console.log("saving metafield");
       const updateMetafield = () => __async(this, null, function* () {
         const result = yield applyMetafieldsChange({
           type: "updateMetafield",
@@ -19667,7 +19706,6 @@ ${errorInfo.componentStack}`);
           valueType: "string",
           value: selectedTime
         });
-        console.log("result", result);
       });
       updateMetafield();
     }, [selectedTime, applyMetafieldsChange]);
@@ -19680,37 +19718,30 @@ ${errorInfo.componentStack}`);
     };
     const changeDate = (date) => {
       setSelectedDate(date);
-      setBookingData(null);
     };
     const changeTime = (time) => {
       setSelectedTime(time);
-      setBookingData(null);
     };
-    (0, import_react19.useEffect)(() => {
-      const today = /* @__PURE__ */ new Date();
-      today.setDate(today.getDate() + 1);
-      setSelectedDate(formatDate(today));
-    }, []);
-    (0, import_react19.useEffect)(() => {
-      if (selectedDate) {
-        const updateMetafield = () => __async(this, null, function* () {
-          console.log("result metafield", metafields);
-        });
-        updateMetafield();
+    const addOneDay = () => {
+      const day = selectedDate ? new Date(selectedDate) : /* @__PURE__ */ new Date();
+      if (selectedDate)
+        day.setDate(day.getDate() + 1);
+      setSelectedDate(formatDate(day));
+    };
+    (0, import_react17.useEffect)(() => {
+      if (selectedDate && clientAddress) {
         try {
+          setIsFetching(true);
           const fetchTimeSlots = () => __async(this, null, function* () {
             var _a;
             const body = JSON.stringify(
               mapTimeSlotsRequest({
                 date: selectedDate + "T10:30:00",
-                shipping_address: {
-                  address1: "Paddington Station",
-                  city: "London",
-                  zip: "W2 1HA",
+                shipping_address: __spreadValues({
                   latitude: 51.51748275756836,
                   longitude: -0.1782519966363907,
-                  country_code: "GB"
-                }
+                  country_code: clientAddress.countryCode
+                }, clientAddress)
               })
             );
             const data = yield fetch("https://localhost:3000/timeSlots", {
@@ -19718,6 +19749,7 @@ ${errorInfo.componentStack}`);
               headers: { "Content-Type": "application/json" },
               body
             });
+            setIsFetching(false);
             const parsedData = yield data.json();
             setTimeSlots(
               ((_a = parsedData == null ? void 0 : parsedData.estimates) == null ? void 0 : _a.length) > 0 ? parsedData.estimates[0].time_slots : []
@@ -19725,86 +19757,61 @@ ${errorInfo.componentStack}`);
           });
           fetchTimeSlots();
         } catch (err) {
-          console.log(err);
+          console.log("error:", err);
+          setIsFetching(false);
         }
       }
-    }, [selectedDate]);
-    (0, import_react19.useEffect)(() => {
-      if ((timeSlots == null ? void 0 : timeSlots.length) > 0) {
-        setSelectedTime(timeSlots[0].id);
-      }
-    }, [timeSlots]);
-    (0, import_react19.useEffect)(() => {
-      if (selectedTime) {
+    }, [selectedDate, clientAddress]);
+    (0, import_react17.useEffect)(() => {
+      if (selectedTime && clientAddress) {
         try {
           const fetchPrice = () => __async(this, null, function* () {
-            const body = JSON.stringify({
-              shipping_address: {
-                address1: "123 Main St",
-                city: "London",
-                zip: "W1W 8AX",
-                latitude: 51.516,
-                longitude: -0.13
-              }
-            });
+            var _a;
+            const body = JSON.stringify(
+              mapTimeSlotsPricesRequest({
+                time_slot_id: selectedTime,
+                shipping_address: __spreadValues({
+                  latitude: 51.51748275756836,
+                  longitude: -0.1782519966363907,
+                  country_code: clientAddress.countryCode
+                }, clientAddress)
+              })
+            );
             const data = yield fetch("https://localhost:3000/timeSlotsPrices", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body
             });
             const parsedData = yield data.json();
+            const fare = ((_a = parsedData == null ? void 0 : parsedData.estimates) == null ? void 0 : _a.length) > 0 ? parsedData.estimates[0].fare_estimate.total_charged : null;
           });
           fetchPrice();
         } catch (err) {
-          console.log(err);
+          console.log("error:", err);
         }
       }
-    }, [selectedTime]);
-    const [options, setOptions] = (0, import_react19.useState)([]);
-    (0, import_react19.useEffect)(() => {
-      if (!timeSlots || timeSlots.length === 0)
+    }, [selectedTime, clientAddress]);
+    (0, import_react17.useEffect)(() => {
+      if (!timeSlots || timeSlots.length === 0) {
+        setOptions([]);
         return;
+      }
       setOptions(
         timeSlots.map((interval) => ({
           value: interval.id,
           label: formatTime(new Date(interval.from_date)) + " - " + formatTime(new Date(interval.till_date))
         }))
       );
-    }, [selectedDate, timeSlots]);
-    (0, import_react19.useEffect)(() => {
+    }, [timeSlots]);
+    (0, import_react17.useEffect)(() => {
       if (options.length > 0)
         setSelectedTime(options[0].value);
+      else
+        addOneDay();
     }, [options]);
     const getDate = () => {
       return selectedDate == null ? void 0 : selectedDate.split("-").reverse().join("-");
     };
-    const makeBooking = () => __async(this, null, function* () {
-      setBookingData(null);
-      setIsFetching(true);
-      try {
-        const data = yield fetch("https://localhost:3000/confirmBookingManual", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            time: selectedTime
-          })
-        });
-        setIsFetching(false);
-        const parsedData = yield data.json();
-        setBookingData(parsedData);
-      } catch (err) {
-        console.log(err);
-        yield new Promise((resolve) => setTimeout(resolve, 1e3));
-        setIsFetching(false);
-      }
-    });
-    const bookingTitle = (0, import_react19.useMemo)(() => {
-      if (!bookingData)
-        return "";
-      if (bookingData.error.message === "OK")
-        return `Booking successful \u{1F389} Reservation number: ${bookingData.booking_reference.number}`;
-      return `Booking failed. Error: ${bookingData.error.message}. Code: ${bookingData.error.code}`;
-    }, [bookingData]);
     return isAddLeeDeliverySelected() ? /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(import_jsx_runtime4.Fragment, { children: /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)(BlockStack2, { children: [
       /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)(Text2, { children: [
         "Selected date & time: ",
@@ -19833,7 +19840,7 @@ ${errorInfo.componentStack}`);
           }
         ),
         /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(BlockStack2, {}),
-        /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
+        isFetching ? /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(Text2, { size: "small", children: "Fetching time slots..." }) : (options == null ? void 0 : options.length) > 0 ? /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
           Select2,
           {
             label: "Time interval",
@@ -19841,44 +19848,9 @@ ${errorInfo.componentStack}`);
             onChange: changeTime,
             options
           }
-        )
-      ] }),
-      /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
-        Button2,
-        {
-          onPress: makeBooking,
-          loading: isFetching,
-          disabled: isFetching || bookingData,
-          children: "Make booking"
-        }
-      ),
-      bookingData && /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
-        Banner2,
-        {
-          title: bookingTitle,
-          status: bookingData.error.message === "OK" ? "success" : "critical"
-        }
-      )
+        ) : /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(Text2, { size: "small", children: "No slots available today." })
+      ] })
     ] }) }) : null;
   }
-  var formatDate = (date) => {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const day = String(date.getDate()).padStart(2, "0");
-    return `${year}-${month}-${day}`;
-  };
-  var formatTime = (time) => {
-    const hours = String(time.getHours()).padStart(2, "0");
-    const minutes = String(time.getMinutes()).padStart(2, "0");
-    return `${hours}:${minutes}`;
-  };
-  var getLabel = (timeSlotId, timeSlots) => {
-    if (!timeSlotId || !timeSlots || timeSlots.length === 0)
-      return "-";
-    const interval = timeSlots.find((interval2) => interval2.id === timeSlotId);
-    if (!interval)
-      return "-";
-    return formatTime(new Date(interval.from_date)) + " - " + formatTime(new Date(interval.till_date));
-  };
 })();
 //# sourceMappingURL=addlee-options.js.map

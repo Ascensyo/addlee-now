@@ -2,26 +2,26 @@
 
 name = "AddLee Now"
 client_id = "81054b8def443db2e61797cf88dcc62b"
-application_url = "https://easier-combinations-directories-threshold.trycloudflare.com"
+application_url = "https://nc-caroline-span-rescue.trycloudflare.com"
 embedded = true
 
 [access_scopes]
 # Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
-scopes = "write_products,read_products,write_shipping,read_shipping,write_delivery_customizations,read_orders"
+scopes = "write_products,read_products,write_shipping,read_shipping,write_delivery_customizations,read_orders,read_assigned_fulfillment_orders"
 
 [auth]
 redirect_urls = [
-  "https://easier-combinations-directories-threshold.trycloudflare.com/auth/callback",
-  "https://easier-combinations-directories-threshold.trycloudflare.com/auth/shopify/callback",
-  "https://easier-combinations-directories-threshold.trycloudflare.com/api/auth/callback",
-  "https://easier-combinations-directories-threshold.trycloudflare.com/.shopify/graphiql/auth/callback"
+  "https://nc-caroline-span-rescue.trycloudflare.com/auth/callback",
+  "https://nc-caroline-span-rescue.trycloudflare.com/auth/shopify/callback",
+  "https://nc-caroline-span-rescue.trycloudflare.com/api/auth/callback",
+  "https://nc-caroline-span-rescue.trycloudflare.com/.shopify/graphiql/auth/callback"
 ]
 
 [webhooks]
 api_version = "2023-10"
 
 [app_proxy]
-url = "https://easier-combinations-directories-threshold.trycloudflare.com/api/2.0"
+url = "https://nc-caroline-span-rescue.trycloudflare.com/api/2.0"
 subpath = "affiliates-api-url"
 prefix = "tools"
 

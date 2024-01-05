@@ -7,28 +7,42 @@ import {
   Text,
   InlineLayout,
   Image,
-  Button,
   Banner,
   useApplyMetafieldsChange,
-  useAppMetafields,
-  useMetafields,
+  useApi,
 } from "@shopify/ui-extensions-react/checkout";
 import { useEffect, useMemo, useState } from "react";
-import { mapTimeSlotsRequest } from "./utils";
+import {
+  formatDate,
+  formatTime,
+  getLabel,
+  mapTimeSlotsPricesRequest,
+  mapTimeSlotsRequest,
+} from "./utils";
 
 export default reactExtension(
   "purchase.checkout.shipping-option-item.details.render",
-  () => <Extension />
+  (target) => <Extension target={target} />
 );
 
-function Extension() {
+function Extension({ target }) {
   const deliveryGroups = useDeliveryGroups();
+  const { shippingAddress } = useApi();
 
   const [selectedDate, setSelectedDate] = useState();
   const [selectedTime, setSelectedTime] = useState();
   const [isFetching, setIsFetching] = useState(false);
-  const [bookingData, setBookingData] = useState(null);
   const [timeSlots, setTimeSlots] = useState([]);
+  const [clientAddress, setClientAddress] = useState();
+  const [options, setOptions] = useState([]);
+
+  const handler = (address) => {
+    setClientAddress(address);
+  };
+
+  useEffect(() => {
+    shippingAddress.subscribe(handler);
+  }, []);
 
   const yesterday = useMemo(() => {
     const today = new Date();
@@ -39,13 +53,10 @@ function Extension() {
   const metafieldNamespace = "custom";
   const metafieldKey = "timeSlot";
 
-  // Set a function to handle updating a metafield
   const applyMetafieldsChange = useApplyMetafieldsChange();
-  const metafields = useMetafields();
 
   useEffect(() => {
     if (!selectedTime) return;
-    console.log("saving metafield");
 
     const updateMetafield = async () => {
       const result = await applyMetafieldsChange({
@@ -55,8 +66,6 @@ function Extension() {
         valueType: "string",
         value: selectedTime,
       });
-
-      console.log("result", result);
     };
 
     updateMetafield();
@@ -72,41 +81,31 @@ function Extension() {
 
   const changeDate = (date) => {
     setSelectedDate(date);
-    setBookingData(null);
   };
 
   const changeTime = (time) => {
     setSelectedTime(time);
-    setBookingData(null);
+  };
+
+  const addOneDay = () => {
+    const day = selectedDate ? new Date(selectedDate) : new Date();
+    if (selectedDate) day.setDate(day.getDate() + 1);
+    setSelectedDate(formatDate(day));
   };
 
   useEffect(() => {
-    const today = new Date();
-    today.setDate(today.getDate() + 1);
-    setSelectedDate(formatDate(today));
-  }, []);
-
-  useEffect(() => {
-    if (selectedDate) {
-      //get metafield
-      const updateMetafield = async () => {
-        console.log("result metafield", metafields);
-      };
-
-      updateMetafield();
-
+    if (selectedDate && clientAddress) {
       try {
+        setIsFetching(true);
         const fetchTimeSlots = async () => {
           const body = JSON.stringify(
             mapTimeSlotsRequest({
               date: selectedDate + "T10:30:00",
               shipping_address: {
-                address1: "Paddington Station",
-                city: "London",
-                zip: "W2 1HA",
                 latitude: 51.51748275756836,
                 longitude: -0.1782519966363907,
-                country_code: "GB",
+                country_code: clientAddress.countryCode,
+                ...clientAddress,
               },
             })
           );
@@ -116,8 +115,8 @@ function Extension() {
             body,
           });
 
+          setIsFetching(false);
           const parsedData = await data.json();
-          //console.log(parsedData);
           setTimeSlots(
             parsedData?.estimates?.length > 0
               ? parsedData.estimates[0].time_slots
@@ -127,30 +126,29 @@ function Extension() {
 
         fetchTimeSlots();
       } catch (err) {
-        console.log(err);
+        console.log("error:", err);
+
+        setIsFetching(false);
       }
     }
-  }, [selectedDate]);
+  }, [selectedDate, clientAddress]);
 
   useEffect(() => {
-    if (timeSlots?.length > 0) {
-      setSelectedTime(timeSlots[0].id);
-    }
-  }, [timeSlots]);
-
-  useEffect(() => {
-    if (selectedTime) {
+    if (selectedTime && clientAddress) {
       try {
         const fetchPrice = async () => {
-          const body = JSON.stringify({
-            shipping_address: {
-              address1: "123 Main St",
-              city: "London",
-              zip: "W1W 8AX",
-              latitude: 51.516,
-              longitude: -0.13,
-            },
-          });
+          const body = JSON.stringify(
+            mapTimeSlotsPricesRequest({
+              time_slot_id: selectedTime,
+              shipping_address: {
+                latitude: 51.51748275756836,
+                longitude: -0.1782519966363907,
+                country_code: clientAddress.countryCode,
+                ...clientAddress,
+              },
+            })
+          );
+
           const data = await fetch("https://localhost:3000/timeSlotsPrices", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -158,23 +156,25 @@ function Extension() {
           });
 
           const parsedData = await data.json();
-          //console.log("parsedData", parsedData);
-
-          //To do: update the price
+          const fare =
+            parsedData?.estimates?.length > 0
+              ? parsedData.estimates[0].fare_estimate.total_charged
+              : null;
         };
 
         fetchPrice();
       } catch (err) {
-        console.log(err);
+        console.log("error:", err);
       }
     }
-  }, [selectedTime]);
-
-  const [options, setOptions] = useState([]);
+  }, [selectedTime, clientAddress]);
 
   useEffect(() => {
-    //console.log(timeSlots);
-    if (!timeSlots || timeSlots.length === 0) return;
+    if (!timeSlots || timeSlots.length === 0) {
+      setOptions([]);
+      return;
+    }
+
     setOptions(
       timeSlots.map((interval) => ({
         value: interval.id,
@@ -184,45 +184,16 @@ function Extension() {
           formatTime(new Date(interval.till_date)),
       }))
     );
-  }, [selectedDate, timeSlots]);
+  }, [timeSlots]);
 
   useEffect(() => {
     if (options.length > 0) setSelectedTime(options[0].value);
+    else addOneDay();
   }, [options]);
 
   const getDate = () => {
     return selectedDate?.split("-").reverse().join("-");
   };
-
-  const makeBooking = async () => {
-    setBookingData(null);
-    setIsFetching(true);
-    //console.log("selectedTime", selectedTime);
-    try {
-      const data = await fetch("https://localhost:3000/confirmBookingManual", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          time: selectedTime,
-        }),
-      });
-      setIsFetching(false);
-
-      const parsedData = await data.json();
-      setBookingData(parsedData);
-    } catch (err) {
-      console.log(err);
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      setIsFetching(false);
-    }
-  };
-
-  const bookingTitle = useMemo(() => {
-    if (!bookingData) return "";
-    if (bookingData.error.message === "OK")
-      return `Booking successful 🎉 Reservation number: ${bookingData.booking_reference.number}`;
-    return `Booking failed. Error: ${bookingData.error.message}. Code: ${bookingData.error.code}`;
-  }, [bookingData]);
 
   return isAddLeeDeliverySelected() ? (
     <>
@@ -246,54 +217,20 @@ function Extension() {
             disabled={[{ end: formatDate(yesterday) }]}
           />
           <BlockStack />
-          <Select
-            label="Time interval"
-            value={selectedTime}
-            onChange={changeTime}
-            options={options}
-          />
+          {isFetching ? (
+            <Text size="small">Fetching time slots...</Text>
+          ) : options?.length > 0 ? (
+            <Select
+              label="Time interval"
+              value={selectedTime}
+              onChange={changeTime}
+              options={options}
+            />
+          ) : (
+            <Text size="small">No slots available today.</Text>
+          )}
         </InlineLayout>
-
-        <Button
-          onPress={makeBooking}
-          loading={isFetching}
-          disabled={isFetching || bookingData}
-        >
-          Make booking
-        </Button>
-        {bookingData && (
-          <Banner
-            title={bookingTitle}
-            status={bookingData.error.message === "OK" ? "success" : "critical"}
-          />
-        )}
       </BlockStack>
     </>
   ) : null;
 }
-
-const formatDate = (date) => {
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-  const day = String(date.getDate()).padStart(2, "0");
-  return `${year}-${month}-${day}`;
-};
-
-const formatTime = (time) => {
-  const hours = String(time.getHours()).padStart(2, "0");
-  const minutes = String(time.getMinutes()).padStart(2, "0");
-  return `${hours}:${minutes}`;
-};
-
-const getLabel = (timeSlotId, timeSlots) => {
-  if (!timeSlotId || !timeSlots || timeSlots.length === 0) return "-";
-
-  const interval = timeSlots.find((interval) => interval.id === timeSlotId);
-  if (!interval) return "-";
-
-  return (
-    formatTime(new Date(interval.from_date)) +
-    " - " +
-    formatTime(new Date(interval.till_date))
-  );
-};
