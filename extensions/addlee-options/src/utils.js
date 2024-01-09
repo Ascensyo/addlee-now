@@ -30,8 +30,8 @@ export const mapTimeSlotsRequest = (data) => {
           type: "ADDRESS",
           formatted_address: `${data.shipping_address.address1}, ${data.shipping_address.city}, ${data.shipping_address.zip}`,
           location: {
-            lat: data.shipping_address.latitude,
-            lon: data.shipping_address.longitude,
+            lat: data.shipping_address.latitude + 0.0000000000000001,
+            lon: data.shipping_address.longitude + 0.0000000000000001,
             accuracy: 1,
           },
           address_components: {
@@ -77,8 +77,8 @@ export const mapTimeSlotsPricesRequest = (data) => {
           type: "ADDRESS",
           formatted_address: `${data.shipping_address.address1}, ${data.shipping_address.city}, ${data.shipping_address.zip}`,
           location: {
-            lat: data.shipping_address.latitude,
-            lon: data.shipping_address.longitude,
+            lat: data.shipping_address.latitude + 0.0000000000000001,
+            lon: data.shipping_address.longitude + 0.0000000000000001,
             accuracy: 1,
           },
           address_components: {

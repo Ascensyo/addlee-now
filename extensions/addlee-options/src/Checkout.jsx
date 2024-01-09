@@ -10,6 +10,7 @@ import {
   Banner,
   useApplyMetafieldsChange,
   useApi,
+  useAttributes,
 } from "@shopify/ui-extensions-react/checkout";
 import { useEffect, useMemo, useState } from "react";
 import {
@@ -27,7 +28,8 @@ export default reactExtension(
 
 function Extension({ target }) {
   const deliveryGroups = useDeliveryGroups();
-  const { shippingAddress } = useApi();
+  const { shippingAddress, query, sessionToken, attributes } = useApi();
+  const attrs = useAttributes();
 
   const [selectedDate, setSelectedDate] = useState();
   const [selectedTime, setSelectedTime] = useState();
@@ -36,12 +38,22 @@ function Extension({ target }) {
   const [clientAddress, setClientAddress] = useState();
   const [options, setOptions] = useState([]);
 
-  const handler = (address) => {
-    setClientAddress(address);
+  const handler = async (address) => {
+    const data = await fetch(
+      `https://api.postcodes.io/postcodes/${address.zip}`
+    );
+    const parsedData = await data.json();
+    console.log(parsedData);
+    setClientAddress({
+      ...address,
+      latitude: parsedData.result.latitude,
+      longitude: parsedData.result.longitude,
+    });
   };
 
   useEffect(() => {
     shippingAddress.subscribe(handler);
+    console.log(attrs);
   }, []);
 
   const yesterday = useMemo(() => {

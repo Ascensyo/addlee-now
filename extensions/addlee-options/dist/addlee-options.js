@@ -19142,10 +19142,10 @@
   // node_modules/@shopify/ui-extensions-react/build/esm/surfaces/checkout/render.mjs
   var import_react6 = __toESM(require_react(), 1);
 
-  // node_modules/@remote-ui/react/build/esm/render.mjs
+  // node_modules/@shopify/ui-extensions-react/node_modules/@remote-ui/react/build/esm/render.mjs
   var import_react2 = __toESM(require_react(), 1);
 
-  // node_modules/@remote-ui/react/build/esm/reconciler.mjs
+  // node_modules/@shopify/ui-extensions-react/node_modules/@remote-ui/react/build/esm/reconciler.mjs
   var import_react_reconciler = __toESM(require_react_reconciler(), 1);
   var createReconciler = (options) => {
     var _options$primary;
@@ -19288,11 +19288,11 @@
     return hasOwnProperty.call(object, property);
   }
 
-  // node_modules/@remote-ui/react/build/esm/context.mjs
+  // node_modules/@shopify/ui-extensions-react/node_modules/@remote-ui/react/build/esm/context.mjs
   var import_react = __toESM(require_react(), 1);
   var RenderContext = /* @__PURE__ */ (0, import_react.createContext)(null);
 
-  // node_modules/@remote-ui/react/build/esm/render.mjs
+  // node_modules/@shopify/ui-extensions-react/node_modules/@remote-ui/react/build/esm/render.mjs
   var import_jsx_runtime = __toESM(require_jsx_runtime(), 1);
   var cache = /* @__PURE__ */ new WeakMap();
   var LEGACY_ROOT = 0;
@@ -19337,11 +19337,11 @@
     }), container, null, callback);
   }
 
-  // node_modules/@remote-ui/react/build/esm/components.mjs
+  // node_modules/@shopify/ui-extensions-react/node_modules/@remote-ui/react/build/esm/components.mjs
   var import_react4 = __toESM(require_react(), 1);
   var import_jsx_runtime2 = __toESM(require_jsx_runtime(), 1);
 
-  // node_modules/@remote-ui/react/build/esm/hooks/render.mjs
+  // node_modules/@shopify/ui-extensions-react/node_modules/@remote-ui/react/build/esm/hooks/render.mjs
   var import_react3 = __toESM(require_react(), 1);
   function useRender() {
     const render3 = (0, import_react3.useContext)(RenderContext);
@@ -19351,7 +19351,7 @@
     return render3;
   }
 
-  // node_modules/@remote-ui/react/build/esm/components.mjs
+  // node_modules/@shopify/ui-extensions-react/node_modules/@remote-ui/react/build/esm/components.mjs
   function createRemoteReactComponent(componentType, {
     fragmentProps
   } = {}) {
@@ -19543,6 +19543,11 @@ ${errorInfo.componentStack}`);
     throw new ExtensionHasNoMethodError("applyMetafieldChange", api.extension.target);
   }
 
+  // node_modules/@shopify/ui-extensions-react/build/esm/surfaces/checkout/hooks/attributes.mjs
+  function useAttributes() {
+    return useSubscription(useApi().attributes);
+  }
+
   // node_modules/@shopify/ui-extensions-react/build/esm/surfaces/checkout/hooks/delivery-groups.mjs
   function useDeliveryGroups() {
     const api = useApi();
@@ -19587,8 +19592,8 @@ ${errorInfo.componentStack}`);
             type: "ADDRESS",
             formatted_address: `${data.shipping_address.address1}, ${data.shipping_address.city}, ${data.shipping_address.zip}`,
             location: {
-              lat: data.shipping_address.latitude,
-              lon: data.shipping_address.longitude,
+              lat: data.shipping_address.latitude + 1e-16,
+              lon: data.shipping_address.longitude + 1e-16,
               accuracy: 1
             },
             address_components: {
@@ -19632,8 +19637,8 @@ ${errorInfo.componentStack}`);
             type: "ADDRESS",
             formatted_address: `${data.shipping_address.address1}, ${data.shipping_address.city}, ${data.shipping_address.zip}`,
             location: {
-              lat: data.shipping_address.latitude,
-              lon: data.shipping_address.longitude,
+              lat: data.shipping_address.latitude + 1e-16,
+              lon: data.shipping_address.longitude + 1e-16,
               accuracy: 1
             },
             address_components: {
@@ -19674,18 +19679,28 @@ ${errorInfo.componentStack}`);
   );
   function Extension({ target }) {
     const deliveryGroups = useDeliveryGroups();
-    const { shippingAddress } = useApi();
+    const { shippingAddress, query, sessionToken, attributes } = useApi();
+    const attrs = useAttributes();
     const [selectedDate, setSelectedDate] = (0, import_react17.useState)();
     const [selectedTime, setSelectedTime] = (0, import_react17.useState)();
     const [isFetching, setIsFetching] = (0, import_react17.useState)(false);
     const [timeSlots, setTimeSlots] = (0, import_react17.useState)([]);
     const [clientAddress, setClientAddress] = (0, import_react17.useState)();
     const [options, setOptions] = (0, import_react17.useState)([]);
-    const handler = (address) => {
-      setClientAddress(address);
-    };
+    const handler = (address) => __async(this, null, function* () {
+      const data = yield fetch(
+        `https://api.postcodes.io/postcodes/${address.zip}`
+      );
+      const parsedData = yield data.json();
+      console.log(parsedData);
+      setClientAddress(__spreadProps(__spreadValues({}, address), {
+        latitude: parsedData.result.latitude,
+        longitude: parsedData.result.longitude
+      }));
+    });
     (0, import_react17.useEffect)(() => {
       shippingAddress.subscribe(handler);
+      console.log(attrs);
     }, []);
     const yesterday = (0, import_react17.useMemo)(() => {
       const today = /* @__PURE__ */ new Date();
@@ -19853,4 +19868,3 @@ ${errorInfo.componentStack}`);
     ] }) }) : null;
   }
 })();
-//# sourceMappingURL=addlee-options.js.map
