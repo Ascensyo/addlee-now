@@ -40,7 +40,7 @@ function Extension() {
   }, []);
 
   return (
-    <Banner title="AddLee Now delivery confirmation!">
+    <Banner title="AddLee Now delivery confirmed!">
       {isError ? (
         <>Something went wrong. Press the back button to refresh the page!</>
       ) : !isLoading ? (
