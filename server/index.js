@@ -97,12 +97,16 @@ app.post("/confirmBooking", jsonParser, async function (req, res) {
     data = await response.json();
     console.log("data - ", data);
 
-    fs.writeFile("./booking", data.booking_reference?.number, function (err) {
-      if (err) {
-        return console.log(err);
+    fs.writeFile(
+      "./booking",
+      data.booking_reference?.number.toString(),
+      function (err) {
+        if (err) {
+          return console.log(err);
+        }
+        console.log("The file was saved!");
       }
-      console.log("The file was saved!");
-    });
+    );
   } catch (error) {
     console.log("error - ", error);
     data = error;

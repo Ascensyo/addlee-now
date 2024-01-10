@@ -37,18 +37,24 @@ function Extension({ target }) {
   const [timeSlots, setTimeSlots] = useState([]);
   const [clientAddress, setClientAddress] = useState();
   const [options, setOptions] = useState([]);
+  const [postcodeError, setPostcodeError] = useState(false);
 
   const handler = async (address) => {
-    const data = await fetch(
-      `https://api.postcodes.io/postcodes/${address.zip}`
-    );
-    const parsedData = await data.json();
-    console.log(parsedData);
-    setClientAddress({
-      ...address,
-      latitude: parsedData.result.latitude,
-      longitude: parsedData.result.longitude,
-    });
+    try {
+      const data = await fetch(
+        `https://api.postcodes.io/postcodes/${address.zip}`
+      );
+      const parsedData = await data.json();
+      console.log(parsedData);
+      setClientAddress({
+        ...address,
+        latitude: parsedData.result.latitude,
+        longitude: parsedData.result.longitude,
+      });
+    } catch (err) {
+      console.log("error:", err);
+      setPostcodeError(true);
+    }
   };
 
   useEffect(() => {
@@ -208,20 +214,23 @@ function Extension({ target }) {
   };
 
   return isAddLeeDeliverySelected() ? (
-    <>
+    postcodeError ? (
+      <Banner title="Error">
+        Postcode error. Please enter a valid one to use AddLee Now.
+      </Banner>
+    ) : (
       <BlockStack>
         <Text>
           Selected date & time: {getDate()} -{" "}
           {getLabel(selectedTime, timeSlots)}
         </Text>
-
         <InlineLayout columns={["10%", "fill", "40%", "fill", "40%"]}>
           <Image
             source="https://svgur.com/i/112T.svg"
             fit="cover"
             aspectRatio={"1/1"}
           />
-          <BlockStack />
+          <BlockStack />{" "}
           <DateField
             value={selectedDate}
             label="Delivery date"
@@ -243,6 +252,6 @@ function Extension({ target }) {
           )}
         </InlineLayout>
       </BlockStack>
-    </>
+    )
   ) : null;
 }

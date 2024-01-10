@@ -2495,7 +2495,7 @@
           var HostPortal = 4;
           var HostComponent = 5;
           var HostText = 6;
-          var Fragment2 = 7;
+          var Fragment = 7;
           var Mode = 8;
           var ContextConsumer = 9;
           var ContextProvider = 10;
@@ -2635,7 +2635,7 @@
                 return "DehydratedFragment";
               case ForwardRef:
                 return getWrappedName$1(type, type.render, "ForwardRef");
-              case Fragment2:
+              case Fragment:
                 return "Fragment";
               case HostComponent:
                 return type;
@@ -7053,7 +7053,7 @@
               }
             }
             function updateFragment2(returnFiber, current2, fragment, lanes, key) {
-              if (current2 === null || current2.tag !== Fragment2) {
+              if (current2 === null || current2.tag !== Fragment) {
                 var created = createFiberFromFragment(fragment, returnFiber.mode, lanes, key);
                 created.return = returnFiber;
                 return created;
@@ -7456,7 +7456,7 @@
                 if (child.key === key) {
                   var elementType = element.type;
                   if (elementType === REACT_FRAGMENT_TYPE) {
-                    if (child.tag === Fragment2) {
+                    if (child.tag === Fragment) {
                       deleteRemainingChildren(returnFiber, child.sibling);
                       var existing = useFiber(child, element.props.children);
                       existing.return = returnFiber;
@@ -11633,7 +11633,7 @@
                 var _resolvedProps2 = workInProgress2.elementType === type ? _unresolvedProps2 : resolveDefaultProps(type, _unresolvedProps2);
                 return updateForwardRef(current2, workInProgress2, type, _resolvedProps2, renderLanes2);
               }
-              case Fragment2:
+              case Fragment:
                 return updateFragment(current2, workInProgress2, renderLanes2);
               case Mode:
                 return updateMode(current2, workInProgress2, renderLanes2);
@@ -12074,7 +12074,7 @@
               case SimpleMemoComponent:
               case FunctionComponent:
               case ForwardRef:
-              case Fragment2:
+              case Fragment:
               case Mode:
               case Profiler:
               case ContextConsumer:
@@ -16840,7 +16840,7 @@
             return fiber;
           }
           function createFiberFromFragment(elements, mode, lanes, key) {
-            var fiber = createFiber(Fragment2, elements, key, mode);
+            var fiber = createFiber(Fragment, elements, key, mode);
             fiber.lanes = lanes;
             return fiber;
           }
@@ -19121,6 +19121,9 @@
   // node_modules/@shopify/ui-extensions/build/esm/surfaces/checkout/extension.mjs
   var extension = createExtensionRegistrationFunction();
 
+  // node_modules/@shopify/ui-extensions/build/esm/surfaces/checkout/components/Banner/Banner.mjs
+  var Banner = createRemoteComponent("Banner");
+
   // node_modules/@shopify/ui-extensions/build/esm/surfaces/checkout/components/BlockStack/BlockStack.mjs
   var BlockStack = createRemoteComponent("BlockStack");
 
@@ -19467,6 +19470,9 @@ ${errorInfo.componentStack}`);
     }
   };
 
+  // node_modules/@shopify/ui-extensions-react/build/esm/surfaces/checkout/components/Banner/Banner.mjs
+  var Banner2 = createRemoteReactComponent(Banner);
+
   // node_modules/@shopify/ui-extensions-react/build/esm/surfaces/checkout/components/BlockStack/BlockStack.mjs
   var BlockStack2 = createRemoteReactComponent(BlockStack);
 
@@ -19486,7 +19492,7 @@ ${errorInfo.componentStack}`);
   var Text2 = createRemoteReactComponent(Text);
 
   // node_modules/@shopify/ui-extensions-react/build/esm/surfaces/checkout/hooks/api.mjs
-  var import_react14 = __toESM(require_react(), 1);
+  var import_react15 = __toESM(require_react(), 1);
 
   // node_modules/@shopify/ui-extensions-react/build/esm/surfaces/checkout/errors.mjs
   var CheckoutUIExtensionError = class extends Error {
@@ -19504,7 +19510,7 @@ ${errorInfo.componentStack}`);
 
   // node_modules/@shopify/ui-extensions-react/build/esm/surfaces/checkout/hooks/api.mjs
   function useApi(_target) {
-    const api = (0, import_react14.useContext)(ExtensionApiContext);
+    const api = (0, import_react15.useContext)(ExtensionApiContext);
     if (api == null) {
       throw new CheckoutUIExtensionError("You can only call this hook when running as a UI extension.");
     }
@@ -19512,10 +19518,10 @@ ${errorInfo.componentStack}`);
   }
 
   // node_modules/@shopify/ui-extensions-react/build/esm/surfaces/checkout/hooks/subscription.mjs
-  var import_react15 = __toESM(require_react(), 1);
+  var import_react16 = __toESM(require_react(), 1);
   function useSubscription(subscription) {
-    const [, setValue] = (0, import_react15.useState)(subscription.current);
-    (0, import_react15.useEffect)(() => {
+    const [, setValue] = (0, import_react16.useState)(subscription.current);
+    (0, import_react16.useEffect)(() => {
       let didUnsubscribe = false;
       const checkForUpdates = (newValue) => {
         if (didUnsubscribe) {
@@ -19534,7 +19540,7 @@ ${errorInfo.componentStack}`);
   }
 
   // node_modules/@shopify/ui-extensions-react/build/esm/surfaces/checkout/hooks/metafields.mjs
-  var import_react16 = __toESM(require_react(), 1);
+  var import_react17 = __toESM(require_react(), 1);
   function useApplyMetafieldsChange() {
     const api = useApi();
     if ("applyMetafieldChange" in api) {
@@ -19558,7 +19564,7 @@ ${errorInfo.componentStack}`);
   }
 
   // extensions/addlee-options/src/Checkout.jsx
-  var import_react17 = __toESM(require_react());
+  var import_react18 = __toESM(require_react());
 
   // extensions/addlee-options/src/utils.js
   var mapTimeSlotsRequest = (data) => {
@@ -19681,28 +19687,34 @@ ${errorInfo.componentStack}`);
     const deliveryGroups = useDeliveryGroups();
     const { shippingAddress, query, sessionToken, attributes } = useApi();
     const attrs = useAttributes();
-    const [selectedDate, setSelectedDate] = (0, import_react17.useState)();
-    const [selectedTime, setSelectedTime] = (0, import_react17.useState)();
-    const [isFetching, setIsFetching] = (0, import_react17.useState)(false);
-    const [timeSlots, setTimeSlots] = (0, import_react17.useState)([]);
-    const [clientAddress, setClientAddress] = (0, import_react17.useState)();
-    const [options, setOptions] = (0, import_react17.useState)([]);
+    const [selectedDate, setSelectedDate] = (0, import_react18.useState)();
+    const [selectedTime, setSelectedTime] = (0, import_react18.useState)();
+    const [isFetching, setIsFetching] = (0, import_react18.useState)(false);
+    const [timeSlots, setTimeSlots] = (0, import_react18.useState)([]);
+    const [clientAddress, setClientAddress] = (0, import_react18.useState)();
+    const [options, setOptions] = (0, import_react18.useState)([]);
+    const [postcodeError, setPostcodeError] = (0, import_react18.useState)(false);
     const handler = (address) => __async(this, null, function* () {
-      const data = yield fetch(
-        `https://api.postcodes.io/postcodes/${address.zip}`
-      );
-      const parsedData = yield data.json();
-      console.log(parsedData);
-      setClientAddress(__spreadProps(__spreadValues({}, address), {
-        latitude: parsedData.result.latitude,
-        longitude: parsedData.result.longitude
-      }));
+      try {
+        const data = yield fetch(
+          `https://api.postcodes.io/postcodes/${address.zip}`
+        );
+        const parsedData = yield data.json();
+        console.log(parsedData);
+        setClientAddress(__spreadProps(__spreadValues({}, address), {
+          latitude: parsedData.result.latitude,
+          longitude: parsedData.result.longitude
+        }));
+      } catch (err) {
+        console.log("error:", err);
+        setPostcodeError(true);
+      }
     });
-    (0, import_react17.useEffect)(() => {
+    (0, import_react18.useEffect)(() => {
       shippingAddress.subscribe(handler);
       console.log(attrs);
     }, []);
-    const yesterday = (0, import_react17.useMemo)(() => {
+    const yesterday = (0, import_react18.useMemo)(() => {
       const today = /* @__PURE__ */ new Date();
       today.setDate(today.getDate() - 1);
       return today;
@@ -19710,7 +19722,7 @@ ${errorInfo.componentStack}`);
     const metafieldNamespace = "custom";
     const metafieldKey = "timeSlot";
     const applyMetafieldsChange = useApplyMetafieldsChange();
-    (0, import_react17.useEffect)(() => {
+    (0, import_react18.useEffect)(() => {
       if (!selectedTime)
         return;
       const updateMetafield = () => __async(this, null, function* () {
@@ -19743,7 +19755,7 @@ ${errorInfo.componentStack}`);
         day.setDate(day.getDate() + 1);
       setSelectedDate(formatDate(day));
     };
-    (0, import_react17.useEffect)(() => {
+    (0, import_react18.useEffect)(() => {
       if (selectedDate && clientAddress) {
         try {
           setIsFetching(true);
@@ -19777,7 +19789,7 @@ ${errorInfo.componentStack}`);
         }
       }
     }, [selectedDate, clientAddress]);
-    (0, import_react17.useEffect)(() => {
+    (0, import_react18.useEffect)(() => {
       if (selectedTime && clientAddress) {
         try {
           const fetchPrice = () => __async(this, null, function* () {
@@ -19806,7 +19818,7 @@ ${errorInfo.componentStack}`);
         }
       }
     }, [selectedTime, clientAddress]);
-    (0, import_react17.useEffect)(() => {
+    (0, import_react18.useEffect)(() => {
       if (!timeSlots || timeSlots.length === 0) {
         setOptions([]);
         return;
@@ -19818,7 +19830,7 @@ ${errorInfo.componentStack}`);
         }))
       );
     }, [timeSlots]);
-    (0, import_react17.useEffect)(() => {
+    (0, import_react18.useEffect)(() => {
       if (options.length > 0)
         setSelectedTime(options[0].value);
       else
@@ -19827,7 +19839,7 @@ ${errorInfo.componentStack}`);
     const getDate = () => {
       return selectedDate == null ? void 0 : selectedDate.split("-").reverse().join("-");
     };
-    return isAddLeeDeliverySelected() ? /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(import_jsx_runtime4.Fragment, { children: /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)(BlockStack2, { children: [
+    return isAddLeeDeliverySelected() ? postcodeError ? /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(Banner2, { title: "Error", children: "Postcode error. Please enter a valid one to use AddLee Now." }) : /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)(BlockStack2, { children: [
       /* @__PURE__ */ (0, import_jsx_runtime4.jsxs)(Text2, { children: [
         "Selected date & time: ",
         getDate(),
@@ -19845,6 +19857,7 @@ ${errorInfo.componentStack}`);
           }
         ),
         /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(BlockStack2, {}),
+        " ",
         /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(
           DateField2,
           {
@@ -19865,6 +19878,7 @@ ${errorInfo.componentStack}`);
           }
         ) : /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(Text2, { size: "small", children: "No slots available today." })
       ] })
-    ] }) }) : null;
+    ] }) : null;
   }
 })();
+//# sourceMappingURL=addlee-options.js.map

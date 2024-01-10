@@ -19462,23 +19462,29 @@ ${errorInfo.componentStack}`);
   function Extension() {
     const [isLoading, setIsLoading] = (0, import_react9.useState)(true);
     const [bookingNumber, setBookingNumber] = (0, import_react9.useState)();
+    const [isError, setIsError] = (0, import_react9.useState)(false);
     (0, import_react9.useEffect)(() => {
       try {
         const fetchBookingNumber = () => __async(this, null, function* () {
           setIsLoading(true);
-          yield new Promise((resolve) => setTimeout(resolve, 3e3));
+          yield new Promise((resolve) => setTimeout(resolve, 5e3));
           const data = yield fetch("https://localhost:3000/getBooking");
-          console.log("datar", data);
           const parsedData = yield data.json();
           console.log("parsedData", parsedData);
+          if (parsedData === "error") {
+            setIsError(true);
+            return;
+          }
           setBookingNumber(parsedData);
           setIsLoading(false);
         });
         fetchBookingNumber();
       } catch (err) {
         console.log("error:", err);
+        setIsError(true);
       }
     }, []);
-    return /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(Banner2, { title: "Addison Lee booking confirmation", children: !isLoading ? `You booking has been confirmed! Addison Lee booking number: ${bookingNumber}` : /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(import_jsx_runtime4.Fragment, { children: "Loading..." }) });
+    return /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(Banner2, { title: "Addison Lee booking confirmation", children: isError ? /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(import_jsx_runtime4.Fragment, { children: "Something went wrong. Press the back button to refresh the page!" }) : !isLoading ? `You booking has been confirmed! Addison Lee booking number: ${bookingNumber}` : /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(import_jsx_runtime4.Fragment, { children: "Loading..." }) });
   }
 })();
+//# sourceMappingURL=booking-confirmation.js.map

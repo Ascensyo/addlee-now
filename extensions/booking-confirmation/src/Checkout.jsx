@@ -13,17 +13,21 @@ export default reactExtension("purchase.thank-you.block.render", () => (
 function Extension() {
   const [isLoading, setIsLoading] = useState(true);
   const [bookingNumber, setBookingNumber] = useState();
+  const [isError, setIsError] = useState(false);
 
   useEffect(() => {
     try {
       const fetchBookingNumber = async () => {
         setIsLoading(true);
-        await new Promise((resolve) => setTimeout(resolve, 3000));
+        await new Promise((resolve) => setTimeout(resolve, 5000));
         const data = await fetch("https://localhost:3000/getBooking");
-        console.log("datar", data);
 
         const parsedData = await data.json();
         console.log("parsedData", parsedData);
+        if (parsedData === "error") {
+          setIsError(true);
+          return;
+        }
         setBookingNumber(parsedData);
         setIsLoading(false);
       };
@@ -31,12 +35,15 @@ function Extension() {
       fetchBookingNumber();
     } catch (err) {
       console.log("error:", err);
+      setIsError(true);
     }
   }, []);
 
   return (
     <Banner title="Addison Lee booking confirmation">
-      {!isLoading ? (
+      {isError ? (
+        <>Something went wrong. Press the back button to refresh the page!</>
+      ) : !isLoading ? (
         `You booking has been confirmed! Addison Lee booking number: ${bookingNumber}`
       ) : (
         <>Loading...</>
