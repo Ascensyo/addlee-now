@@ -19484,6 +19484,6 @@ ${errorInfo.componentStack}`);
         setIsError(true);
       }
     }, []);
-    return /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(Banner2, { title: "Addison Lee booking confirmation", children: isError ? /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(import_jsx_runtime4.Fragment, { children: "Something went wrong. Press the back button to refresh the page!" }) : !isLoading ? `You booking has been confirmed! Addison Lee booking number: ${bookingNumber}` : /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(import_jsx_runtime4.Fragment, { children: "Loading..." }) });
+    return /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(Banner2, { title: "AddLee Now delivery confirmation", children: isError ? /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(import_jsx_runtime4.Fragment, { children: "Something went wrong. Press the back button to refresh the page!" }) : !isLoading ? `AddLee NOW delivery confirmed! Your booking number is: ${bookingNumber}` : /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(import_jsx_runtime4.Fragment, { children: "Loading..." }) });
   }
 })();

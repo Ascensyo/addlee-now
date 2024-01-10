@@ -40,11 +40,11 @@ function Extension() {
   }, []);
 
   return (
-    <Banner title="Addison Lee booking confirmation">
+    <Banner title="AddLee Now delivery confirmation">
       {isError ? (
         <>Something went wrong. Press the back button to refresh the page!</>
       ) : !isLoading ? (
-        `You booking has been confirmed! Addison Lee booking number: ${bookingNumber}`
+        `AddLee NOW delivery confirmed! Your booking number is: ${bookingNumber}`
       ) : (
         <>Loading...</>
       )}
