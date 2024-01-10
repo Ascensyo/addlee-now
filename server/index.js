@@ -97,21 +97,21 @@ app.post("/confirmBooking", jsonParser, async function (req, res) {
     data = await response.json();
     console.log("data - ", data);
 
-    // fs.writeFile("./booking", data.booking_reference?.number, function (err) {
-    //   if (err) {
-    //     return console.log(err);
-    //   }
-    //   console.log("The file was saved!");
-    // });
+    fs.writeFile("./booking", data.booking_reference?.number, function (err) {
+      if (err) {
+        return console.log(err);
+      }
+      console.log("The file was saved!");
+    });
   } catch (error) {
     console.log("error - ", error);
     data = error;
-    // fs.writeFile("./booking", "error", function (err) {
-    //   if (err) {
-    //     return console.log(err);
-    //   }
-    //   console.log("The file was saved!");
-    // });
+    fs.writeFile("./booking", "error", function (err) {
+      if (err) {
+        return console.log(err);
+      }
+      console.log("The file was saved!");
+    });
   }
 
   console.log("finished");
