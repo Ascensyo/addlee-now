@@ -2,7 +2,7 @@
 
 name = "AddLee Now"
 client_id = "81054b8def443db2e61797cf88dcc62b"
-application_url = "https://oscar-cad-dynamic-pdt.trycloudflare.com"
+application_url = "https://fiji-shannon-psychology-photograph.trycloudflare.com"
 embedded = true
 
 [access_scopes]
@@ -11,17 +11,17 @@ scopes = "write_products,read_products,write_shipping,read_shipping,write_delive
 
 [auth]
 redirect_urls = [
-  "https://oscar-cad-dynamic-pdt.trycloudflare.com/auth/callback",
-  "https://oscar-cad-dynamic-pdt.trycloudflare.com/auth/shopify/callback",
-  "https://oscar-cad-dynamic-pdt.trycloudflare.com/api/auth/callback",
-  "https://oscar-cad-dynamic-pdt.trycloudflare.com/.shopify/graphiql/auth/callback"
+  "https://fiji-shannon-psychology-photograph.trycloudflare.com/auth/callback",
+  "https://fiji-shannon-psychology-photograph.trycloudflare.com/auth/shopify/callback",
+  "https://fiji-shannon-psychology-photograph.trycloudflare.com/api/auth/callback",
+  "https://fiji-shannon-psychology-photograph.trycloudflare.com/.shopify/graphiql/auth/callback"
 ]
 
 [webhooks]
 api_version = "2023-10"
 
 [app_proxy]
-url = "https://oscar-cad-dynamic-pdt.trycloudflare.com/api/2.0"
+url = "https://fiji-shannon-psychology-photograph.trycloudflare.com/api/2.0"
 subpath = "affiliates-api-url"
 prefix = "tools"
 

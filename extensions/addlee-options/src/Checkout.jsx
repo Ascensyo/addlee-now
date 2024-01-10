@@ -51,6 +51,7 @@ function Extension({ target }) {
         latitude: parsedData.result.latitude,
         longitude: parsedData.result.longitude,
       });
+      setPostcodeError(false);
     } catch (err) {
       console.log("error:", err);
       setPostcodeError(true);

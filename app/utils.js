@@ -3,7 +3,7 @@ import { randomUUID } from "crypto";
 export const mapPayloadToBooking = (payload, timeSlotId) => {
   return {
     vendor_reference: {
-      id: randomUUID(),
+      id: payload.order_number,
       customer_reference: {
         account: "50",
       },
