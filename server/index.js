@@ -96,12 +96,39 @@ app.post("/confirmBooking", jsonParser, async function (req, res) {
     });
     data = await response.json();
     console.log("data - ", data);
+
+    // fs.writeFile("./booking", data.booking_reference?.number, function (err) {
+    //   if (err) {
+    //     return console.log(err);
+    //   }
+    //   console.log("The file was saved!");
+    // });
+  } catch (error) {
+    console.log("error - ", error);
+    data = error;
+    // fs.writeFile("./booking", "error", function (err) {
+    //   if (err) {
+    //     return console.log(err);
+    //   }
+    //   console.log("The file was saved!");
+    // });
+  }
+
+  console.log("finished");
+
+  res.send(data);
+});
+
+app.get("/getBooking", async function (req, res) {
+  console.log("API getBooking reached");
+
+  try {
+    data = fs.readFileSync("./booking", "utf8");
+    console.log("data - ", data);
   } catch (error) {
     console.log("error - ", error);
     data = error;
   }
-
-  console.log("finished");
 
   res.send(data);
 });
