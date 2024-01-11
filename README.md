@@ -29,8 +29,9 @@ autonumber
     AL Now Server->>+HL Back End: Create (POST) /bookings/create the AL Now ( account 50)
     HL Back End-->>-AL Now Server: Return Booking details 
     AL Now Server-->>AL Now App: Pass the booking details 
-    AL Now App -->>-Shopify Store: Use the AL Now Booking details
-    Shopify Store-->>-Buyer: Render the Thank you page
+    AL Now App -->>-AL Now App: Use the AL Now Booking details in Thanks You Extension
+    AL Now App-->>Shopify Store: Render the Extention
+    Shopify Store->>-Buyer: Render the Thank you page 
 ```
 
 ### Prerequisites
