@@ -8,8 +8,9 @@ Visit the [`shopify.dev` documentation](https://shopify.dev/docs/api/shopify-app
 
 ## Quick start
 
-```sequenceDiagram
-    autonumber
+```mermaid
+sequenceDiagram
+autonumber
     Buyer->>+Shopify Store: Checkout Process
     Shopify Store->>+AL Now App: Present Shoping Option
     AL Now App->>AL Now Server: Get me some timeslots
