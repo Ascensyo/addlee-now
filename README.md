@@ -8,6 +8,32 @@ Visit the [`shopify.dev` documentation](https://shopify.dev/docs/api/shopify-app
 
 ## Quick start
 
+```mermaid
+sequenceDiagram
+autonumber
+    Buyer->>+Shopify Store: Checkout Process
+    Shopify Store->>+AL Now App: Present Shoping Option
+    AL Now App->>AL Now Server: Get me some timeslots
+    AL Now Server->>HL Back End: Get timeslots for the day
+    HL Back End-->> AL Now Server: Return timeslots
+    AL Now Server-->>AL Now App: Pass timeslots array ( to do the flow of error...)  
+    AL Now App-->>+AL Now App: Save in metafields
+    AL Now App-->>AL Now Server: Get a price for {{timeslotID}}
+    AL Now Server->>HL Back End: Get me a price for {{timeslotID}}
+    HL Back End-->>AL Now Server: Return the price
+    AL Now Server-->>AL Now App: Store ( do nothing for now)
+    Buyer->>Shopify Store: Complete Order and Payment
+    Shopify Store->>Shopify Webhook: Trigger on Success 'orders/create' event
+    Shopify Webhook-->>AL Now App: Send the webhook
+    AL Now App->>AL Now Server: On 200 OK and IF( Shipping Option == `AddLee Now`)
+    AL Now Server->>+HL Back End: Create (POST) /bookings/create the AL Now ( account 50)
+    HL Back End-->>-AL Now Server: Return Booking details 
+    AL Now Server-->>AL Now App: Pass the booking details 
+    AL Now App -->>-AL Now App: Use the AL Now Booking details in Thanks You Extension
+    AL Now App-->>Shopify Store: Render the Extention
+    Shopify Store->>-Buyer: Render the Thank you page 
+```
+
 ### Prerequisites
 
 1. You must [download and install Node.js](https://nodejs.org/en/download/) if you don't already have it.
