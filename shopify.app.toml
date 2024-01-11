@@ -2,7 +2,7 @@
 
 name = "AddLee Now"
 client_id = "81054b8def443db2e61797cf88dcc62b"
-application_url = "https://stores-breach-talking-bw.trycloudflare.com"
+application_url = "https://bufing-footage-towns-tablet.trycloudflare.com"
 embedded = true
 
 [access_scopes]
@@ -11,22 +11,22 @@ scopes = "write_products,read_products,write_shipping,read_shipping,write_delive
 
 [auth]
 redirect_urls = [
-  "https://stores-breach-talking-bw.trycloudflare.com/auth/callback",
-  "https://stores-breach-talking-bw.trycloudflare.com/auth/shopify/callback",
-  "https://stores-breach-talking-bw.trycloudflare.com/api/auth/callback",
-  "https://stores-breach-talking-bw.trycloudflare.com/.shopify/graphiql/auth/callback"
+  "https://bufing-footage-towns-tablet.trycloudflare.com/auth/callback",
+  "https://bufing-footage-towns-tablet.trycloudflare.com/auth/shopify/callback",
+  "https://bufing-footage-towns-tablet.trycloudflare.com/api/auth/callback",
+  "https://bufing-footage-towns-tablet.trycloudflare.com/.shopify/graphiql/auth/callback"
 ]
 
 [webhooks]
-api_version = "2023-10"
+api_version = "2024-01"
 
 [app_proxy]
-url = "https://stores-breach-talking-bw.trycloudflare.com/api/2.0"
+url = "https://bufing-footage-towns-tablet.trycloudflare.com/api/2.0"
 subpath = "affiliates-api-url"
 prefix = "tools"
 
 [pos]
-embedded = false
+embedded = true
 
 [build]
 automatically_update_urls_on_dev = true

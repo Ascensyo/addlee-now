@@ -1,4 +1,6 @@
-import { randomUUID } from "crypto";
+import {
+  randomUUID
+} from "crypto";
 
 export const mapPayloadToBooking = (payload, timeSlotId) => {
   return {
@@ -16,21 +18,20 @@ export const mapPayloadToBooking = (payload, timeSlotId) => {
         //TO DO: Figure out how to get this
         {
           type: "ADDRESS",
-          formatted_address:
-            "Addison Lee Ltd, Unit 1, 8-14 William Road, London, NW1 3EN",
+          formatted_address: "87-135 Brompton Road, London, SW1X 7XL, United Kingdom",
           location: {
-            lat: 51.52677917480469,
-            lon: -0.1403989940881729,
+            lat: 51.493458,
+            lon: -0.168517,
             accuracy: 1,
           },
           address_components: {
-            postal_code: "NW1 3EN",
+            postal_code: "SW1X 7XL",
             city: "London",
           },
           delivery_contact: {
-            name: "test1",
-            mobile: "7922222222",
-            email: "test@test.COM",
+            name: "Snow & Boots Merchant",
+            mobile: "7762916147",
+            email: "eduard@ascensyo.com",
           },
         },
         {
