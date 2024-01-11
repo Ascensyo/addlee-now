@@ -23,7 +23,7 @@ function Extension() {
         const data = await fetch("https://localhost:3000/getBooking");
 
         const parsedData = await data.json();
-        console.log("parsedData", parsedData);
+        console.log("parsedData-getBooking", parsedData);
         if (parsedData === "error") {
           setIsError(true);
           return;

@@ -3,7 +3,9 @@ const fetch = require("node-fetch");
 const https = require("https");
 const fs = require("fs");
 const cors = require("cors");
-const { v4: uuidv4 } = require("uuid");
+const {
+  v4: uuidv4
+} = require("uuid");
 const bodyParser = require("body-parser");
 
 var jsonParser = bodyParser.json();
@@ -125,7 +127,7 @@ app.post("/confirmBooking", jsonParser, async function (req, res) {
 
 app.get("/getBooking", async function (req, res) {
   console.log("API getBooking reached");
-
+  // this seems to be an issue , the file has 389606 however the api returns 389552 ?
   try {
     data = fs.readFileSync("./booking", "utf8");
     console.log("data - ", data);
@@ -231,7 +233,9 @@ app.post("/callAdminAPI", jsonParser, async function (req, res) {
   try {
     const response = await fetch(fullUrl, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json"
+      },
       body,
     });
     data = await response.json();
@@ -247,5 +251,5 @@ app.post("/callAdminAPI", jsonParser, async function (req, res) {
 });
 
 server.listen(port, () => {
-  console.log(`Example app listening on port ${port}`);
+  console.log(`AddLee NOW App Server listening on:  ${port}`);
 });
