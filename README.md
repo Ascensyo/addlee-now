@@ -8,8 +8,8 @@ Visit the [`shopify.dev` documentation](https://shopify.dev/docs/api/shopify-app
 
 ## Quick start
 
-sequenceDiagram
-autonumber
+```sequenceDiagram
+    autonumber
     Buyer->>+Shopify Store: Checkout Process
     Shopify Store->>+AL Now App: Present Shoping Option
     AL Now App->>AL Now Server: Get me some timeslots
@@ -30,7 +30,7 @@ autonumber
     AL Now Server-->>AL Now App: Pass the booking details 
     AL Now App -->>-Shopify Store: Use the AL Now Booking details
     Shopify Store-->>-Buyer: Render the Thank you page
-
+```
 
 ### Prerequisites
 
