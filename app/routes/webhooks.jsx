@@ -3,6 +3,12 @@ import db from "../db.server";
 import https from "https";
 import { mapPayloadToBooking } from "../utils";
 
+/// Shop details query
+
+// await admin.rest.resources.Shop.all({
+//   session: session,
+// });
+
 const httpsAgent = new https.Agent({
   rejectUnauthorized: false,
 });

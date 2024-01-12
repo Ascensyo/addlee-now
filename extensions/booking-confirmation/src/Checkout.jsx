@@ -19,7 +19,7 @@ function Extension() {
     try {
       const fetchBookingNumber = async () => {
         setIsLoading(true);
-        await new Promise((resolve) => setTimeout(resolve, 5000));
+        await new Promise((resolve) => setTimeout(resolve, 8000));
         const data = await fetch("https://localhost:3000/getBooking");
 
         const parsedData = await data.json();

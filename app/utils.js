@@ -1,7 +1,3 @@
-import {
-  randomUUID
-} from "crypto";
-
 export const mapPayloadToBooking = (payload, timeSlotId) => {
   return {
     vendor_reference: {
