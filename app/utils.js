@@ -4,10 +4,13 @@ export const mapPayloadToBooking = (payload, timeSlotId) => {
       id: payload.order_number,
       customer_reference: {
         account: "50",
-        company_references: [
-          {
+        company_references: [{
             name: payload.shop_name,
             value: payload.order_number,
+          },
+          {
+            name: "Confirmation Number",
+            value: payload.confirmation_number,
           },
         ],
       },
