@@ -1,11 +1,5 @@
-import { json } from "@remix-run/node";
-import { Form, useActionData, useLoaderData } from "@remix-run/react";
+import { Form, useActionData } from "@remix-run/react";
 import { Card, Layout, Page } from "@shopify/polaris";
-
-// Is used only for Get requests
-export const loader = () => {
-  return json({ message: "Welcome to AddLee Now" });
-};
 
 // If we need to mutate the data in any way we need to use action({request})
 export const action = async ({ request }) => {
@@ -16,7 +10,6 @@ export const action = async ({ request }) => {
 };
 
 export default function Data(params) {
-  const loaderData = useLoaderData();
   const actionData = useActionData();
 
   return (

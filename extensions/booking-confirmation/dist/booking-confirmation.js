@@ -19467,7 +19467,7 @@ ${errorInfo.componentStack}`);
       try {
         const fetchBookingNumber = () => __async(this, null, function* () {
           setIsLoading(true);
-          yield new Promise((resolve) => setTimeout(resolve, 5e3));
+          yield new Promise((resolve) => setTimeout(resolve, 8e3));
           const data = yield fetch("https://localhost:3000/getBooking");
           const parsedData = yield data.json();
           console.log("parsedData-getBooking", parsedData);
@@ -19487,4 +19487,3 @@ ${errorInfo.componentStack}`);
     return /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(Banner2, { title: "AddLee Now delivery confirmed!", children: isError ? /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(import_jsx_runtime4.Fragment, { children: "Something went wrong. Press the back button to refresh the page!" }) : !isLoading ? `Your Addison Lee courier booking number is: ${bookingNumber}` : /* @__PURE__ */ (0, import_jsx_runtime4.jsx)(import_jsx_runtime4.Fragment, { children: "Loading..." }) });
   }
 })();
-//# sourceMappingURL=booking-confirmation.js.map

@@ -4,6 +4,12 @@ export const mapPayloadToBooking = (payload, timeSlotId) => {
       id: payload.order_number,
       customer_reference: {
         account: "50",
+        company_references: [
+          {
+            name: payload.shop_name,
+            value: payload.order_number,
+          },
+        ],
       },
     },
     booking: {
@@ -14,20 +20,20 @@ export const mapPayloadToBooking = (payload, timeSlotId) => {
         //TO DO: Figure out how to get this
         {
           type: "ADDRESS",
-          formatted_address: "87-135 Brompton Road, London, SW1X 7XL, United Kingdom",
+          formatted_address: `${payload.origin_address.address1}, ${payload.origin_address.city}, ${payload.origin_address.zip}`,
           location: {
-            lat: 51.493458,
-            lon: -0.168517,
+            lat: payload.origin_address.latitude,
+            lon: payload.origin_address.longitude,
             accuracy: 1,
           },
           address_components: {
-            postal_code: "SW1X 7XL",
-            city: "London",
+            postal_code: payload.origin_address.zip,
+            city: payload.origin_address.city,
           },
           delivery_contact: {
-            name: "Snow & Boots Merchant",
-            mobile: "7762916147",
-            email: "eduard@ascensyo.com",
+            name: payload.origin_address.name,
+            mobile: payload.origin_address.phone,
+            email: payload.origin_address.email,
           },
         },
         {

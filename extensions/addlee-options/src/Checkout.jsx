@@ -28,7 +28,7 @@ export default reactExtension(
 
 function Extension({ target }) {
   const deliveryGroups = useDeliveryGroups();
-  const { shippingAddress, query, sessionToken, attributes } = useApi();
+  const { shippingAddress } = useApi();
   const attrs = useAttributes();
 
   const [selectedDate, setSelectedDate] = useState();
@@ -78,7 +78,7 @@ function Extension({ target }) {
     if (!selectedTime) return;
 
     const updateMetafield = async () => {
-      const result = await applyMetafieldsChange({
+      await applyMetafieldsChange({
         type: "updateMetafield",
         namespace: metafieldNamespace,
         key: metafieldKey,

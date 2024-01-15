@@ -3,18 +3,12 @@ import db from "../db.server";
 import https from "https";
 import { mapPayloadToBooking } from "../utils";
 
-/// Shop details query
-
-// await admin.rest.resources.Shop.all({
-//   session: session,
-// });
-
 const httpsAgent = new https.Agent({
   rejectUnauthorized: false,
 });
 
 export const action = async ({ request }) => {
-  console.log("gets here action start", request);
+  console.log("webhooks action start. request: ", request);
   const { topic, shop, session, admin, payload } = await authenticate.webhook(
     request
   );
@@ -32,25 +26,46 @@ export const action = async ({ request }) => {
       `
     );
 
-    const response2 = await admin.graphql(
+    const parsed = await response.json();
+    return parsed.data.order.metafield.value;
+  };
+
+  const getShopLocation = async () => {
+    const shopData = await admin.rest.resources.Shop.all({
+      session: session,
+    });
+
+    console.log("shopData", shopData);
+
+    const primaryLocation = await admin.graphql(
       `query {
-        order(id: "${payload.admin_graphql_api_id}") {
-          fulfillments(first: 10) {
-            id
+        location(id: "gid://shopify/Location/${shopData.data[0].primary_location_id}") {
+          address {
+            address1
+            city
+            zip
+            latitude
+            longitude
+            phone
           }
         }
       }
       `
     );
 
-    const parsed2 = await response2.json();
-    console.log("response2", parsed2.data);
+    const parsed = await primaryLocation.json();
 
-    const parsed = await response.json();
-    return parsed.data.order.metafield.value;
+    const result = {
+      ...parsed.data.location.address,
+      phone: shopData.data[0].phone,
+      email: shopData.data[0].email,
+      name: shopData.data[0].name,
+    };
+
+    console.log("result", result);
+
+    return result;
   };
-
-  console.log("gets here");
 
   if (!admin) {
     // The admin context isn't returned if the webhook fired after a shop was uninstalled.
@@ -70,21 +85,27 @@ export const action = async ({ request }) => {
       if (payload.shipping_lines[0].title === "AddLee Now") {
         try {
           const timeSlotId = await query();
-          //console.log("timeSlotId", timeSlotId);
 
-          const body = mapPayloadToBooking(payload, timeSlotId);
-          //console.log("body", body);
+          const shopLocation = await getShopLocation();
 
           await fetch("https://localhost:3000/confirmBooking", {
             agent: httpsAgent,
-            body: JSON.stringify(mapPayloadToBooking(payload, timeSlotId)),
+            body: JSON.stringify(
+              mapPayloadToBooking(
+                {
+                  ...payload,
+                  origin_address: shopLocation,
+                },
+                timeSlotId
+              )
+            ),
             method: "POST",
             headers: {
               "Content-Type": "application/json",
             },
           });
 
-          // save tracking number for the order
+          // TO DO: save tracking number for the order
         } catch (error) {
           console.log("error", error);
         }

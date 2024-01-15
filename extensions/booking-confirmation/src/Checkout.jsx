@@ -1,9 +1,4 @@
-import {
-  Banner,
-  useApi,
-  useTranslate,
-  reactExtension,
-} from "@shopify/ui-extensions-react/checkout";
+import { Banner, reactExtension } from "@shopify/ui-extensions-react/checkout";
 import { useEffect, useState } from "react";
 
 export default reactExtension("purchase.thank-you.block.render", () => (

@@ -3,9 +3,6 @@ const fetch = require("node-fetch");
 const https = require("https");
 const fs = require("fs");
 const cors = require("cors");
-// const {
-//   v4: uuidv4
-// } = require("uuid");
 const bodyParser = require("body-parser");
 
 var jsonParser = bodyParser.json();
@@ -79,7 +76,7 @@ app.post("/timeSlotsPrices", jsonParser, async function (req, res) {
   res.send(data);
 });
 
-// Server root page // This request is responsable of making the booking in HL backend
+// This request is responsable of making the booking in HL backend
 app.post("/confirmBooking", jsonParser, async function (req, res) {
   console.log("API confirmBooking reached");
   const fullUrl = "https://partners.addleetest.net/api/2.0/bookings/create";
@@ -127,9 +124,10 @@ app.post("/confirmBooking", jsonParser, async function (req, res) {
   res.send(data);
 });
 
-app.get("/getBooking", async function (req, res) {
+app.get("/getBooking", async function (_req, res) {
   console.log("API getBooking reached");
-  // this seems to be an issue , the file has 389606 however the api returns 389552 ?
+
+  let data = "nothing";
   try {
     data = fs.readFileSync("./booking", "utf8");
     console.log("data - ", data);
@@ -140,7 +138,6 @@ app.get("/getBooking", async function (req, res) {
 
   res.send(data);
 });
-//
 
 server.listen(port, () => {
   console.log(`AddLee NOW App Server listening on:  ${port}`);

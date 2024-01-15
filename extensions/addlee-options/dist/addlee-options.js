@@ -19685,7 +19685,7 @@ ${errorInfo.componentStack}`);
   );
   function Extension({ target }) {
     const deliveryGroups = useDeliveryGroups();
-    const { shippingAddress, query, sessionToken, attributes } = useApi();
+    const { shippingAddress } = useApi();
     const attrs = useAttributes();
     const [selectedDate, setSelectedDate] = (0, import_react18.useState)();
     const [selectedTime, setSelectedTime] = (0, import_react18.useState)();
@@ -19727,7 +19727,7 @@ ${errorInfo.componentStack}`);
       if (!selectedTime)
         return;
       const updateMetafield = () => __async(this, null, function* () {
-        const result = yield applyMetafieldsChange({
+        yield applyMetafieldsChange({
           type: "updateMetafield",
           namespace: metafieldNamespace,
           key: metafieldKey,
