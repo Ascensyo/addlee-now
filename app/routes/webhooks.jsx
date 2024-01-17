@@ -67,6 +67,31 @@ export const action = async ({ request }) => {
     return result;
   };
 
+  const saveTrackingNumber = async (number) => {
+    const mutation = await admin.graphql(
+      `mutation {
+        fulfillmentTrackingInfoUpdateV2(
+          fulfillmentId: "gid://shopify/Fulfillment/${payload.fulfillments[0].id}"
+          trackingInfoInput: {number: "${number}", company: "AddLee Now", url: "https://www.addisonlee.com/"}
+        ) {
+          userErrors {
+            field
+            message
+          }
+        }
+      }
+      `
+    );
+
+    const parsedMutation = await mutation.json();
+    console.log(
+      "parsedMutation",
+      parsedMutation.data.fulfillmentTrackingInfoUpdateV2.userErrors
+    );
+
+    return;
+  };
+
   if (!admin) {
     // The admin context isn't returned if the webhook fired after a shop was uninstalled.
     throw new Response();
@@ -88,7 +113,7 @@ export const action = async ({ request }) => {
 
           const shopLocation = await getShopLocation();
 
-          await fetch("https://localhost:3000/confirmBooking", {
+          const result = await fetch("https://localhost:3000/confirmBooking", {
             agent: httpsAgent,
             body: JSON.stringify(
               mapPayloadToBooking(
@@ -105,7 +130,10 @@ export const action = async ({ request }) => {
             },
           });
 
-          // TO DO: save tracking number for the order
+          const parsed = await result.json();
+          console.log("parsed", parsed);
+
+          await saveTrackingNumber(parsed.booking_reference.number);
         } catch (error) {
           console.log("error", error);
         }

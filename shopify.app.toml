@@ -2,26 +2,26 @@
 
 name = "AddLee Now"
 client_id = "81054b8def443db2e61797cf88dcc62b"
-application_url = "https://hotel-ma-brought-herb.trycloudflare.com"
+application_url = "https://improve-ins-technical-arch.trycloudflare.com"
 embedded = true
 
 [access_scopes]
 # Learn more at https://shopify.dev/docs/apps/tools/cli/configuration#access_scopes
-scopes = "write_products,read_products,write_shipping,read_shipping,write_delivery_customizations,read_orders,read_assigned_fulfillment_orders,unauthenticated_read_customers"
+scopes = "write_products,read_products,write_shipping,read_shipping,write_delivery_customizations,read_orders,read_assigned_fulfillment_orders,unauthenticated_read_customers,write_assigned_fulfillment_orders,write_third_party_fulfillment_orders,write_merchant_managed_fulfillment_orders"
 
 [auth]
 redirect_urls = [
-  "https://hotel-ma-brought-herb.trycloudflare.com/auth/callback",
-  "https://hotel-ma-brought-herb.trycloudflare.com/auth/shopify/callback",
-  "https://hotel-ma-brought-herb.trycloudflare.com/api/auth/callback",
-  "https://hotel-ma-brought-herb.trycloudflare.com/.shopify/graphiql/auth/callback"
+  "https://improve-ins-technical-arch.trycloudflare.com/auth/callback",
+  "https://improve-ins-technical-arch.trycloudflare.com/auth/shopify/callback",
+  "https://improve-ins-technical-arch.trycloudflare.com/api/auth/callback",
+  "https://improve-ins-technical-arch.trycloudflare.com/.shopify/graphiql/auth/callback"
 ]
 
 [webhooks]
 api_version = "2024-01"
 
 [app_proxy]
-url = "https://hotel-ma-brought-herb.trycloudflare.com/api/2.0"
+url = "https://improve-ins-technical-arch.trycloudflare.com/api/2.0"
 subpath = "affiliates-api-url"
 prefix = "tools"
 
