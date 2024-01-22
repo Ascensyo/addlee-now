@@ -72,7 +72,7 @@ export const action = async ({ request }) => {
       `mutation {
         fulfillmentTrackingInfoUpdateV2(
           fulfillmentId: "gid://shopify/Fulfillment/${payload.fulfillments[0].id}"
-          trackingInfoInput: {number: "${number}", company: "AddLee Now", url: "http://trackdriver.addisonlee.com/y47hfqrOqEYIJwOH"}
+          trackingInfoInput: {number: "${number}", company: "AddLee Now", url: "https://map.addisonlee.com/publicMap/trackDriver/mEKSgIbL-vrRKpBJ"}
         ) {
           userErrors {
             field
