@@ -89,6 +89,8 @@ app.post("/confirmBooking", jsonParser, async function (req, res) {
     const response = await fetch(fullUrl, {
       method: "POST",
       headers: {
+
+        //this needs to be changed to the correct HL API key via ENV variable
         Authorization: `Basic TXVsZVNvZnRfaTE6R00yNU1tWWthZA==`,
         "Content-Type": "application/json",
         Connection: "keep-alive",
@@ -97,7 +99,7 @@ app.post("/confirmBooking", jsonParser, async function (req, res) {
     });
     data = await response.json();
     console.log("data - ", data);
-
+    // Save the booking number
     fs.writeFile(
       "./booking",
       data.booking_reference?.number.toString(),
@@ -105,7 +107,7 @@ app.post("/confirmBooking", jsonParser, async function (req, res) {
         if (err) {
           return console.log(err);
         }
-        console.log("The file was saved!");
+        console.log("The file #No. was saved!");
       }
     );
   } catch (error) {
