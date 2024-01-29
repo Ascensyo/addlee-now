@@ -9,6 +9,8 @@ node_modules
 /prisma/dev.sqlite
 /prisma/dev.sqlite-journal
 database.sqlite
+shopify.app.toml
+/server/booking
 
 .env
 package-lock.json
